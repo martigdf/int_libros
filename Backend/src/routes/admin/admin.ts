@@ -4,7 +4,7 @@ import { query } from '../../services/database.js'
 
 // Mas adelante agregar verificacion de si es admin o no mediante 
 // el prepasing sacando del token el id de usuario.   
-const example: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
+const adminRoute: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
   fastify.get('/users', {
       schema: {
         tags: ['admin'],
@@ -69,4 +69,4 @@ const example: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> 
 
 }
 
-export default example
+export default adminRoute

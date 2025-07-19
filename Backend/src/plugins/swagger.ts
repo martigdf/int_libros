@@ -21,8 +21,9 @@ export default fp<FastifySwaggerOptions>(async (fastify) => {
         { name: 'requests', description: 'Operations related to requests' },
         { name: 'examples', description: 'Examples end points.' },
         { name: 'auth', description: 'Authentication related end-points' },
+        { name: 'admin', description: 'Admin related end-points' },
         { name: 'users', description: 'User management end-points' },
-        { name: 'admin', description: 'Admin management end-points' }
+        { name: 'books', description: 'Book related end-points' }
       ],
       components: {
         securitySchemes: {
