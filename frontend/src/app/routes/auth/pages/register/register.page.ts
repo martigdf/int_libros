@@ -55,7 +55,7 @@ export class RegisterPage implements OnInit {
   }
 
   async onRegister(): Promise<void> {
-    try {
+    /*try {
       const newUser: UserPost = {
         name: this.name,
         lastname: this.lastname,
@@ -73,7 +73,7 @@ export class RegisterPage implements OnInit {
 
       console.error('Error al registrar:', error);
     
-    }
+    }*/
 
     if (this.userPhoto() === undefined) {
 
@@ -85,15 +85,12 @@ export class RegisterPage implements OnInit {
 
     try {
 
+      console.log("FOTO NO UNDEFINED")
+
       const response = await fetch(this.userPhoto() ?? '');
       const blob = await response.blob();
-
-      const id_user = 0
-
-      const formData = new FormData();
-      formData.append('file', blob, id_user + '.jpg')
-
-      this.http.put(this.apiUrl + 'users/photo', formData);
+      
+      this.usuarioService.submitPhoto(blob);
 
     } catch (error) {
       

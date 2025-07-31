@@ -59,6 +59,17 @@ export class UsuariosService {
       }
     }));
   }
+
+  async submitPhoto(blob: Blob) {
+
+    const id_user = 0
+
+    const formData = new FormData();
+    formData.append('file', blob, id_user + '.jpg')
+
+    await firstValueFrom(this.httpClient.put(this.apiUrl + 'users/photo', formData));
+
+  }
   
   constructor() { }
 

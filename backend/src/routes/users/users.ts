@@ -6,6 +6,7 @@ import bcrypt from 'bcryptjs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import { MultipartFile } from '@fastify/multipart';
+import { writeFile } from 'fs/promises';
 
 const usersRoute: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
   fastify.get('/:id',  {
@@ -258,6 +259,10 @@ const usersRoute: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<voi
       );
 
       console.log({savePath})
+
+      const buffer = await data.toBuffer();
+
+      await writeFile(savePath, buffer);
 
     }
   });
