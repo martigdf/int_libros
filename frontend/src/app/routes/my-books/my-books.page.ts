@@ -14,7 +14,7 @@ import { MainStoreService } from 'src/app/services/main-store.service';
   templateUrl: './my-books.page.html',
   styleUrls: ['./my-books.page.scss'],
   standalone: true,
-  imports: [IonButton, IonButtons, IonGrid, IonRow, IonCardTitle, IonCard, IonCardHeader, IonCardSubtitle, IonCol, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule]
+  imports: [IonGrid, IonRow, IonCardTitle, IonCard, IonCardHeader, IonCardSubtitle, IonCol, IonContent, CommonModule, FormsModule]
 })
 
 

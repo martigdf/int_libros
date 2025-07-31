@@ -68,9 +68,39 @@ export class RegisterPage implements OnInit {
       const response = await this.usuarioService.postUser(newUser);
       console.log('Usuario registrado:', response);
       this.router.navigate(['/login']);
+    
     } catch (error) {
+
       console.error('Error al registrar:', error);
+    
     }
+
+    if (this.userPhoto() === undefined) {
+
+      console.log("FOTO UNDEFINED")
+
+      return
+    
+    }
+
+    try {
+
+      const response = await fetch(this.userPhoto() ?? '');
+      const blob = await response.blob();
+
+      const id_user = 0
+
+      const formData = new FormData();
+      formData.append('file', blob, id_user + '.jpg')
+
+      this.http.put(this.apiUrl + 'users/photo', formData);
+
+    } catch (error) {
+      
+      console.error('Error al subir imagen:', error);
+
+    }
+
   }
 
   goToLogin(): void {

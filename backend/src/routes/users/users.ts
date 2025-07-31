@@ -3,6 +3,9 @@ import { query } from "../../services/database.js";
 import { UserIdSchema, UserSchema, UserPostType, UserPostSchema, UserPutType, UserPutSchema } from '../../schemas/user/userSchema.js';
 import { RequestSchema } from '../../schemas/requests/requestSchema.js';
 import bcrypt from 'bcryptjs';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+import { MultipartFile } from '@fastify/multipart';
 
 const usersRoute: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
   fastify.get('/:id',  {
@@ -217,6 +220,48 @@ const usersRoute: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<voi
       }
     }
   });
+
+  fastify.put('/photo', {
+    schema: {
+      tags: ['users'],
+      summary: 'Ruta para modificar la foto de usuario',
+      description: "Permite a un usuario modificar su foto de perfil",
+      params: Type.Object({ id_user: Type.Integer() }),
+      //body:
+      response: {
+        201: { description: "Foto modificada correctamente" },
+        404: { description: "Error al registrar usuario" },
+      }
+    },
+    handler: async function (request, reply) {
+      
+      const data: MultipartFile | undefined = await request.file();
+
+      if (!data) {
+
+        throw new Error("No se pudo acceder al archivo")
+
+      }
+
+      const __filename = fileURLToPath(import.meta.filename);
+      const __dirname = dirname(__filename);
+      const baseDir = process.cwd();
+
+      console.log({__dirname, __filename, baseDir})
+
+      const savePath = join(
+        baseDir,
+        "public",
+        "usuarios",
+        "fotos",
+        request.params.id_user + ".jpg"
+      );
+
+      console.log({savePath})
+
+    }
+  });
+
 }
 
 export default usersRoute;
