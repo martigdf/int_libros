@@ -154,7 +154,7 @@ const requestsRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise
       }
       
       await query(
-        `INSERT INTO loans (request_id) 
+        `INSERT INTO loans (id_request) 
           VALUES ($1)`,
         [requestId]
       );
@@ -190,7 +190,7 @@ const requestsRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise
 
       const userRequests = await query(
         
-        `SELECT * FROM loans WHERE request_id = $1 AND receiver_user_id = $2`,
+        `SELECT * FROM loans WHERE id_request = $1 AND receiver_user_id = $2`,
         [requestId, userId]
 
       )
@@ -202,7 +202,7 @@ const requestsRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise
       }
       
       await query(
-        `INSERT INTO returns (request_id, opinion, calification) 
+        `INSERT INTO returns (id_request, opinion, calification) 
           VALUES ($1, $2, $3)`,
         [requestId, '', 1]
       )
