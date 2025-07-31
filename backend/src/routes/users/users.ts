@@ -2,9 +2,9 @@ import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox'
 import { query } from "../../services/database.js";
 import { UserIdSchema, UserSchema, UserPostType, UserPostSchema, UserPutType, UserPutSchema } from '../../schemas/user/userSchema.js';
 import { RequestSchema } from '../../schemas/requests/requestSchema.js';
-import bcrypt from 'bcryptjs';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
+import bcrypt from 'bcryptjs';;
+import { join } from 'path';
+import multipart from '@fastify/multipart'
 import { MultipartFile } from '@fastify/multipart';
 import { writeFile } from 'fs/promises';
 
@@ -222,7 +222,7 @@ const usersRoute: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<voi
     }
   });
 
-  fastify.register(require('@fastify/multipart'), {
+  fastify.register(multipart, {
     limits: {
       fieldNameSize: 100, // Max field name size in bytes
       fieldSize: 100,     // Max field value size in bytes
@@ -247,19 +247,25 @@ const usersRoute: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<voi
     },
     handler: async function (request, reply) {
       
+      console.log("1")
+
       const data: MultipartFile | undefined = await request.file();
 
+      console.log("2")
+      
       if (!data) {
 
         throw new Error("No se pudo acceder al archivo")
 
       }
 
-      const __filename = fileURLToPath(import.meta.filename);
-      const __dirname = dirname(__filename);
-      const baseDir = process.cwd();
+      console.log("3");
 
-      console.log({__dirname, __filename, baseDir})
+      const baseDir = process.cwd();
+      
+      console.log("4")
+
+      console.log({baseDir})
 
       const savePath = join(
         baseDir,
