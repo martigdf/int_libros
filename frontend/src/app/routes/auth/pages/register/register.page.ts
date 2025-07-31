@@ -1,20 +1,22 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal, Signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonRow, IonCol, IonButton, IonGrid, IonItem, IonLabel, IonInput } from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonTitle, IonToolbar, IonRow, IonCol, IonButton, IonGrid, IonItem, IonLabel, IonInput, IonImg } from '@ionic/angular/standalone';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { UserPost } from 'src/app/model/user';
 import { UsuariosService } from 'src/app/services/usuarios.service';
+import { Camera, CameraSource, CameraResultType, Photo } from '@capacitor/camera' 
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.page.html',
   styleUrls: ['./register.page.scss'],
   standalone: true,
-  imports: [IonInput, IonGrid, IonButton, IonCol, IonRow, IonContent, CommonModule, FormsModule]
+  imports: [IonImg, IonInput, IonGrid, IonButton, IonCol, IonRow, IonContent, CommonModule, FormsModule]
 })
+
 export class RegisterPage implements OnInit {
 
   name = '';
@@ -33,6 +35,23 @@ export class RegisterPage implements OnInit {
   ) { }
 
   ngOnInit() {
+
+  }
+
+  public userPhoto = signal<string | undefined>('');
+
+  async takePhoto() {
+
+    const capturedPhoto = await Camera.getPhoto({
+
+      resultType: CameraResultType.Uri,
+      source: CameraSource.Camera,
+      quality: 100
+
+    })
+
+    this.userPhoto.set(capturedPhoto.webPath);
+
   }
 
   async onRegister(): Promise<void> {
