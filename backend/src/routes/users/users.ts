@@ -222,12 +222,23 @@ const usersRoute: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<voi
     }
   });
 
+  fastify.register(require('@fastify/multipart'), {
+    limits: {
+      fieldNameSize: 100, // Max field name size in bytes
+      fieldSize: 100,     // Max field value size in bytes
+      fields: 10,         // Max number of non-file fields
+      fileSize: 1000000,  // For multipart forms, the max file size in bytes
+      files: 1,           // Max number of file fields
+      headerPairs: 2000,  // Max number of header key=>value pairs
+      parts: 1000         // For multipart forms, the max number of parts (fields + files)
+    }
+  });
+
   fastify.put('/photo', {
     schema: {
       tags: ['users'],
       summary: 'Ruta para modificar la foto de usuario',
       description: "Permite a un usuario modificar su foto de perfil",
-      params: Type.Object({ id_user: Type.Integer() }),
       //body:
       response: {
         201: { description: "Foto modificada correctamente" },
@@ -255,7 +266,7 @@ const usersRoute: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<voi
         "public",
         "usuarios",
         "fotos",
-        request.params.id_user + ".jpg"
+        "0.jpg" //request.params.id_user + ".jpg"
       );
 
       console.log({savePath})
