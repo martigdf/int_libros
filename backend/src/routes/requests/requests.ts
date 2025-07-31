@@ -1,7 +1,6 @@
 import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox';
 import { query } from '../../services/database.js';
 import { RequestIdSchema, RequestPostSchema, RequestSchema } from '../../schemas/requests/requestSchema.js';
-import { Type } from '@sinclair/typebox';
 import { RequestRepository } from '../../services/request.repository.js';
 
 const requestsRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
