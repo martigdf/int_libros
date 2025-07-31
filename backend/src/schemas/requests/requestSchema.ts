@@ -15,8 +15,8 @@ export const RequestIdSchema = Type.Object({
 });
 
 // Estructura base para request
-export const RequestSchema = Type.Object({
-  request_id: Type.Number(),
+export const RequestSchema = Type.Object(
+  id: Type.Number(),
   creation_date: Type.String({ format: 'date-time', description: 'Fecha de creación de la solicitud' }),
   state: Type.String({ description: 'Estado actual de la solicitud' }),
   sender_user_id: Type.Number({ description: 'ID del usuario que solicita el préstamo' }),

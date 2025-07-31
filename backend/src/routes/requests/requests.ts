@@ -1,6 +1,8 @@
 import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox';
-import { RequestIdSchema, RequestPostSchema } from '../../schemas/requests/requestSchema.js';
 import { query } from '../../services/database.js';
+import { RequestIdSchema, RequestPostSchema, RequestSchema } from '../../schemas/requests/requestSchema.js';
+import { Type } from '@sinclair/typebox';
+import { RequestRepository } from '../../services/request.repository.js';
 
 const requestsRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
 
@@ -9,12 +11,25 @@ const requestsRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise
       tags: ['requests'],
       summary: 'Crear una nueva solicitud de préstamo',
       description: 'Permite al usuario crear una solicitud de préstamo para uno o más libros.',
-      body: RequestPostSchema
+      body: RequestPostSchema,
+      response: {
+        201: Type.Object({ message: Type.String(), requestId: Type.Number() }),
+        400: Type.Object({ message: Type.String() })
+      }
     },
+    onRequest: [fastify.authenticate],
     handler: async (request, reply) => {
-      
-      
+      try {
+        const { receiver_user_id, books } = request.body;
+        const sender = request.user as { id: number };
+        const newReq = await RequestRepository.createRequest(sender.id, receiver_user_id, books);
+        
+        return reply.code(201).send({ message: 'Solicitud creada correctamente', requestId: newReq.id_request });
 
+      } catch (err) {
+        request.log.error(err);
+        return reply.code(400).send({ message: 'Error al crear la solicitud' });
+      }
     }
   });
 
@@ -22,12 +37,22 @@ const requestsRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise
     schema: {
       tags: ['requests'],
       summary: 'Listar mis solicitudes',
-      description: 'Devuelve una lista de solicitudes enviadas por el usuario autenticado.'
+      description: 'Devuelve una lista de solicitudes enviadas por el usuario autenticado.',
+      response: { 200: Type.Array(RequestSchema), 
+        400: Type.Object({ message: Type.String() })
+      }
     },
+    onRequest: [fastify.authenticate],
     handler: async (request, reply) => {
+      try {
+        const sender = request.user as { id: number };
 
-
-
+        const requests = await RequestRepository.getSentRequests(sender.id);
+        return requests;
+      } catch (err) {
+        request.log.error(err);
+        return reply.code(400).send({ message: 'Error al obtener las solicitudes enviadas' });
+      }
     }
   });
 
@@ -35,12 +60,22 @@ const requestsRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise
     schema: {
       tags: ['requests'],
       summary: 'Listar solicitudes recibidas',
-      description: 'Devuelve una lista de solicitudes recibidas para los libros publicados por el usuario autenticado.'
+      description: 'Devuelve una lista de solicitudes recibidas para los libros publicados por el usuario autenticado.',
+      response: { 200: Type.Array(RequestSchema),
+        400: Type.Object({ message: Type.String() })
+      }
     },
+    onRequest: [fastify.authenticate],
     handler: async (request, reply) => {
+      try {
+        const receiver = request.user as { id: number };
 
-
-
+        const received = await RequestRepository.getReceivedRequests(receiver.id);
+        return reply.send(received);
+      } catch (err) {
+        request.log.error(err);
+        return reply.code(400).send({ message: 'Error al obtener las solicitudes recibidas' });
+      }
     }
   });
 
@@ -49,13 +84,35 @@ const requestsRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise
       tags: ['requests'],
       summary: 'Ruta para responder a una solicitud',
       description: 'Acepta o rechaza una solicitud de préstamo usando su ID.',
-      params: RequestIdSchema
+      body: Type.Object({
+        state: Type.Union([Type.Literal('accepted'), Type.Literal('rejected')])
+      }),
+      response: {
+        200: Type.Object({ message: Type.String() }),
+        404: Type.Object({ message: Type.String() }),
+        400: Type.Object({ message: Type.String() })
+      }
     },
+    onRequest: [fastify.authenticate],
     handler: async (request, reply) => {
+      try{
+        const { id, state } = request.body as { id: number; state: string };
+        const receiver = request.user as { id: number };
 
-      console.log(request.params);
-      console.log(request.body);
+        const result = await RequestRepository.respondRequest(id, state, receiver.id);
 
+        if (result.rowCount === 0) {
+          return reply.code(404).send({ message: 'Solicitud no encontrada o no autorizada' });
+        }
+
+        return reply.code(200).send({ message: `Solicitud ${state === 'accepted' ? 'aceptada' : 'rechazada'} correctamente` });
+
+      } catch (err) {
+        request.log.error(err);
+        return reply.code(400).send({ 
+          message: 'Error al procesar la solicitud' 
+        });
+      }
     }
   });
 

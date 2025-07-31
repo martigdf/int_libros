@@ -1,9 +1,9 @@
 <div>
-  @if(this.usuarioResource.hasValue()){
+  @if(user){
     <app-user-form 
-      [usuario]="this.usuarioResource.value()" 
+      [user]="user" 
       [totalRoles]="['admin','user']"
-      (cambiado)="onUsuarioModificado($event)">
+      (changed)="handleSave($event)">
     </app-user-form>
   }
 </div>

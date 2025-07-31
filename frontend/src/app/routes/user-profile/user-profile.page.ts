@@ -2,8 +2,8 @@ import { Component, inject, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { UsuariosService } from 'src/app/services/usuarios.service';
 import { Router } from '@angular/router';
-import { MainStoreService } from 'src/app/services/main-store.service';
 import { IonicModule } from '@ionic/angular';
+import { signal } from '@angular/core';
 
 @Component({
   selector: 'app-user-profile',
@@ -14,14 +14,19 @@ import { IonicModule } from '@ionic/angular';
 })
 export class UserProfilePage implements OnInit {
 
-  public user: any;
   private usuariosService = inject(UsuariosService);
   private alertCtrl = inject(AlertController);
   private router = inject(Router);
-  private store = inject(MainStoreService);
 
-  ngOnInit() {
-    this.user = this.store.getUser(); 
+  public user = signal<any | null>(null);
+
+  async ngOnInit() {
+    const current = JSON.parse(localStorage.getItem('user') || '{}');
+    if (current?.id) {
+      // Fetch user data by ID
+      const data = await this.usuariosService.getById(current.id);
+      this.user.set(data);
+    }
   }
 
   goToHome() {
@@ -41,8 +46,8 @@ export class UserProfilePage implements OnInit {
           text: 'Eliminar',
           handler: async () => {
             try {
-              await this.usuariosService.deleteUser(this.user.id);
-              this.store.clearSession();
+              await this.usuariosService.deleteUser(this.user()?.id);
+              localStorage.removeItem('user');
               this.router.navigate(['/login']);
             } catch (error) {
               console.error('Error al eliminar el usuario:', error);

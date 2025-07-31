@@ -5,19 +5,12 @@
           fill="outline"
           label="Nombre"
           labelPlacement="floating"
-          type="text" 
           name="name" 
-          [(ngModel)]="this.name" 
+          [(ngModel)]="name" 
           required
           minlength="3"
-          appReservado="Jorge"
-          #name="ngModel"
-          errorText="{{ name.errors | errorMessage: 'nombre'}}"
         >
         </ion-input>
-    </ion-col>
-    <ion-col>
-      {{ name.errors | json }}
     </ion-col>
   </ion-row>
     <ion-row>
@@ -28,57 +21,43 @@
           labelPlacement="floating"
           type="text" 
           name="last_name" 
-          [(ngModel)]="this.last_name" 
+          [(ngModel)]="last_name" 
           required
           minlength="3"
-          appReservado="Jorge"
-          #last_name="ngModel"
-          errorText="{{ last_name.errors | errorMessage: 'apellido'}}"
         >
         </ion-input>
-    </ion-col>
-    <ion-col>
-      {{ last_name.errors | json }}
     </ion-col>
   </ion-row>
   <ion-row>
     <ion-col size="12">
       <ion-input
+        #emailField="ngModel"
         fill="outline"
         label="Email"
         labelPlacement="floating"
         type="email"
         name="email"
-        [(ngModel)]="this.email"
+        [(ngModel)]="email"
         required
         email
         minlength="5"
-        #email="ngModel"
-        errorText="{{ email.errors | errorMessage: 'email'}}"
       >
       </ion-input>
-    </ion-col>
-    <ion-col>
-      {{ email.errors | json }}
     </ion-col>
   </ion-row>
   <ion-row>
     <ion-col size="12">
-        {{ roles.errors | json }}
         <ion-select
           label="Roles"
           labelPlacement="floating"
           fill="outline"
           multiple="true" 
           name="roles"
-          (ionChange)="onSelectChange($event)"
-          [(ngModel)]="this.roles"
-          helperText="Selecciona uno o más roles."
+          [(ngModel)]="roles"
           required
-          #roles="ngModel"
           >
-          @for (rol of this.totalRoles(); track rol) {
-            <ion-select-option selected [value]="rol">{{ rol }}</ion-select-option>
+          @for (rol of totalRoles(); track rol) {
+            <ion-select-option [value]="rol">{{ rol }}</ion-select-option>
           }
         </ion-select>
     </ion-col>

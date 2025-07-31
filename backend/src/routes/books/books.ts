@@ -129,16 +129,17 @@ const bookRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<voi
 
         const user = request.user as { id: number };
         const { name, description, author, genres, location } = request.body as BookPostType;
+        const state = 'available';
 
         // Validar que todos los campos requeridos estén presentes
         if (!name || !description || !location || !author || !genres?.length) {
           return reply.status(400).send({ message: "Todos los campos son obligatorios" });
         }
-        
+
         const res = await query(
           `INSERT INTO books (name, author, description, state, location, owner_id) 
-            VALUES ($1, $2, $3, $4, 'available', $5, $6) RETURNING id`,
-          [name, author, description, location, user.id]
+            VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
+          [name, author, description, state, location, user.id]
         );
 
         const bookId = res.rows[0].id;

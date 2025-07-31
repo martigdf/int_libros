@@ -44,7 +44,7 @@ const usersRoute: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<voi
         500: Type.Object({ message: Type.String() }),
       }
     },
-    onRequest: fastify.verifySelfOrAdmin,
+    //onRequest: fastify.verifySelfOrAdmin,
     handler: async function (request, reply) {
       const { id } = request.params as { id: number };
       const userUpdate = request.body as UserPutType;
@@ -195,9 +195,9 @@ const usersRoute: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<voi
           return;
         }
         
-        fastify.websocketServer.clients.forEach( (cliente) => {
-          cliente.send("usuario");
-        });
+        //fastify.websocketServer.clients.forEach( (cliente) => {
+          //cliente.send("usuario");
+        //});
 
         const id = res.rows[0].id;
         

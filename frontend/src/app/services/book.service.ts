@@ -34,4 +34,9 @@ export class BookService {
       this.http.post(`${this.apiUrl}books/publish`, book, { headers })
     );
   }
+
+  // Método para obtener todos los libros
+  async getAllBooks(): Promise<Book[]> {
+    return firstValueFrom(this.http.get<Book[]>(`${this.apiUrl}/`));
+  }
 }

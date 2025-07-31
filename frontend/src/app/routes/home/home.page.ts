@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { User } from 'src/app/model/user';
 import { Book } from 'src/app/model/book';
@@ -21,23 +21,22 @@ export class HomePage  implements OnInit {
   private mainStore = inject(MainStoreService);
   private tokenObject = this.mainStore.token();
 
-  public books: Book[] = [];
-
+  public books = signal<Book[]>([]);
   public user: User = JSON.parse(localStorage.getItem('user') || '{}');
 
   constructor(private router: Router) { }
 
   async ngOnInit() {
-    await this.allBooks();
+    this.allBooks();
   }
 
   async allBooks(){
     try {
-      const data = await firstValueFrom(this.httpClient.get<Book[]>(
-        this.apiUrl + 'books', 
-        { headers : {"Authorization" : "Bearer " + this.tokenObject} }
-      ));
-      this.books = data;
+      const data = await this.httpClient
+        .get<Book[]>(`${this.apiUrl}books`)
+        .toPromise();
+
+      if (data) this.books.set(data);
     } catch (error) {
       console.error('Error al cargar los libros', error);
     }
@@ -51,11 +50,11 @@ export class HomePage  implements OnInit {
     this.router.navigate(['/publish-book']);
   }
 
-  modificarUsuario(id: number) {
+  modificarUsuario(id: string) {
     this.router.navigate([`/modify-user`, id]);
   }
 
-  perfilUsuario(id: number) {
+  perfilUsuario(id: string) {
     this.router.navigate(['/user-profile', id]);
   }
 

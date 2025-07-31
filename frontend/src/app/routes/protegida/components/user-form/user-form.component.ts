@@ -1,65 +1,41 @@
-import { Component, OnInit, input, output, signal } from '@angular/core';
+import { Component, input, output, signal } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
-import { User } from 'src/app/model/user';
-import { ErrorMessagePipe } from 'src/app/pipes/error-message.pipe';
-import { JsonPipe } from '@angular/common';
+import { PutUser, User } from 'src/app/model/user';
 
 @Component({
   selector: 'app-user-form',
   standalone: true,
-  imports: [IonicModule, FormsModule, ErrorMessagePipe, JsonPipe],
+  imports: [IonicModule, FormsModule],
   templateUrl: './user-form.component.html',
   styleUrls: ['./user-form.component.scss'],
 })
-export class UserFormComponent  implements OnInit {
+export class UserFormComponent{
 
   public totalRoles = input<string[]>(['admin', 'user']);
-  public usuario = input<User>({
-    name: '', role: [''],
-    id: 0,
-    last_name: '',
-    email: ''
-  });  //Si no se setea arranca con usuario vacío.
-  public name = signal<string>(this.usuario().name);
-  public roles = signal<string[]>(this.usuario().role);
-  public last_name = signal<string>(this.usuario().last_name);
-  public email = signal<string>(this.usuario().email);
-  public cambiado = output<User>();
-  role: any;
+  public user = input<User | null>(null) 
 
-  constructor() { }
+  public name = signal<string>(this.user()?.name ?? '');
+  public roles = signal<string>(this.user()?.role ?? 'user');
+  public last_name = signal<string>(this.user()?.last_name ?? '');
+  public email = signal<string>(this.user()?.email ?? '');
 
-  ngOnInit() {}
-
-  /*
-  onRoleChange (event:any,rol:string) {
-    console.log({event});
-    console.log(rol);
-    const actual = this.roles();
-    if (event.detail.checked) {
-      this.roles.set([...actual, rol]);
-    } else {
-      this.roles.set(actual.filter(r => r !== rol));
-    }
-    console.log("ROLES: ",this.roles());
-  }
-  */
-
-  onSelectChange (event:any) {
-    console.log({event});
-    this.roles.set(event.detail.value);
-    console.log("ROLES: ",this.roles());
-  }
+  public changed = output<PutUser>();
 
   onSubmit(){
-    const usuarioModificado : User = {
-      id: this.usuario().id,
-      name: this.name(),
-      role: this.roles(),
-      last_name: this.last_name(),
-      email: this.email()
+    const payload : PutUser = {}
+    if (this.name()) payload.name = this.name();
+    if (this.last_name()) payload.last_name = this.last_name();
+    if (this.email() && this.email() !== this.user()?.email) {
+      payload.email = this.email();
     }
-    this.cambiado.emit(usuarioModificado);
+    if (this.roles() !== this.user()?.role) {
+      const selectedRole = this.totalRoles().find(role => role === this.roles());
+      if (selectedRole === 'admin' || selectedRole === 'user') {
+        payload.role = selectedRole as 'admin' | 'user';
+      }
+    }
+    console.log("Payload enviado:", payload);
+    this.changed.emit(payload);
   }
 }

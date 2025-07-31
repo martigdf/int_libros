@@ -5,6 +5,7 @@ import { User, UserPost } from '../model/user';
 import { firstValueFrom } from 'rxjs';
 import { MainStoreService } from './main-store.service';
 import { signal, effect } from '@angular/core';
+import { PutUser } from '../model/user';
 
 @Injectable({
   providedIn: 'root'
@@ -39,13 +40,9 @@ export class UsuariosService {
     );
   }
 
-  async putUser(id: number, data: Partial<User>): Promise<User> {
-    const token = this.mainStore.token();
-    return await firstValueFrom(
-      this.httpClient.put<User>(`${this.apiUrl}users/${id}`, data, {
-        headers: { Authorization: `Bearer ${token}` }
-      })
-    );
+  async putUser(id: string, data: PutUser) {
+    const url = `${this.apiUrl}users/${id}`;
+    return await firstValueFrom(this.httpClient.put<PutUser>(url, data));
   }
 
   async getById(id_usuario:number){
@@ -56,7 +53,7 @@ export class UsuariosService {
     }));
   }
 
-  async deleteUser(id: number) {
+  async deleteUser(id: string) {
     return await firstValueFrom(this.httpClient.delete(`${this.apiUrl}admin/users/${id}`, {
       headers: { Authorization: `Bearer ${this.mainStore.token()}`
       }
