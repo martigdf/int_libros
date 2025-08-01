@@ -6,7 +6,7 @@ import bcrypt from 'bcryptjs';;
 import { join } from 'path';
 import multipart from '@fastify/multipart'
 import { MultipartFile } from '@fastify/multipart';
-import { writeFile } from 'fs/promises';
+import { readFile, writeFile } from 'fs/promises';
 
 const usersRoute: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
   fastify.get('/:id',  {
@@ -237,7 +237,7 @@ const usersRoute: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<voi
   fastify.put('/photo', {
     schema: {
       tags: ['users'],
-      summary: 'Ruta para modificar la foto de usuario',
+      summary: 'Ruta para modificar la foto de perfil',
       description: "Permite a un usuario modificar su foto de perfil",
       //body:
       response: {
@@ -272,7 +272,7 @@ const usersRoute: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<voi
         "public",
         "usuarios",
         "fotos",
-        "0.jpg" //request.params.id_user + ".jpg"
+        "0.jpg" //request.user.id + ".jpg"
       );
 
       console.log({savePath})
@@ -283,7 +283,32 @@ const usersRoute: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<voi
 
     }
   });
+  
+  fastify.get('/photo', {
+    schema: {
+      tags: ['users'],
+      summary: 'Ruta para obtener la foto de perfil',
+      description: "Permite a obtener la foto de perfil del usuario",
+      //params: Type.Object({ user_id: Type.Integer() })
+      //body:
+    },
+    handler: async function (request, reply) {
+      
+      reply.type('image/jpeg');
+
+      const baseDir = process.cwd();
+
+      const fotoPath = join(baseDir, "public", "usuarios", "fotos", '0.jpg');
+      //const fotoPath = join(baseDir, "public", "usuarios", "fotos", request.params.user_id + '.jpg');
+      const buffer = await readFile(fotoPath);
+
+      return buffer;
+
+    }
+  });
 
 }
+
+
 
 export default usersRoute;

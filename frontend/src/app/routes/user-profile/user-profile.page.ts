@@ -4,6 +4,8 @@ import { UsuariosService } from 'src/app/services/usuarios.service';
 import { Router } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { signal } from '@angular/core';
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+import { environment } from 'src/environments/environment.prod';
 
 @Component({
   selector: 'app-user-profile',
@@ -58,4 +60,9 @@ export class UserProfilePage implements OnInit {
     });
     await alert.present();
   }
+
+  private apiUrl = environment.apiUrl
+
+  public userPhoto = this.apiUrl + 'users/photo';
+  
 }
