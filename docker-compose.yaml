@@ -15,9 +15,13 @@ services:
       - db
 
   backend: 
-    image: backend
-    build:
-      context: ./backend
+    image: node:alpine
+    # build:
+    #   context: ./backend
+    # command: "npm run dev"
+    tty: true
+    user: 1000:1000
+    working_dir: /backend
     environment:
       PGHOST: ${PGHOST}
       PGPORT: ${PGPORT}
@@ -33,7 +37,9 @@ services:
   frontend: 
     image: node:alpine
     container_name: frontend
-    command: sh -c "npm install && npm start"
+    # command: sh -c "npm install && npm start"
+    tty: true
+    user: 1000:1000
     build:
       context: ./frontend
     volumes:
@@ -61,7 +67,7 @@ services:
       PGPASSWORD: ${PGPASSWORD}
       PGDATABASE: ${PGDATABASE}
     ports:
-      - "8080:80"
+      - "8000:80"
     volumes:
       - pgadmin_data:/var/lib/pgadmin
       - ./database/servers.json:/pgadmin4/servers.json
