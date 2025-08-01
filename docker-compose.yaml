@@ -4,8 +4,10 @@ services:
     build: ./proxy
     ports:
       - "80:80"
+      - "443:443"
     volumes:
       - ./proxy/proxy.conf.template:/etc/nginx/templates/default.conf.template:ro
+      - ./proxy/certs:/etc/nginx/certs:ro
     container_name: proxy
     depends_on:
       - frontend

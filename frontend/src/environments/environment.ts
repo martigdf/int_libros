@@ -2,9 +2,11 @@
 // `ng build` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
+//CAMBIE LOCALHOST POR LA IP 10.4.200.6
+//cambiar siempre que cambie de wifi 
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost/backend/'
+  apiUrl: 'https://10.4.200.6/backend/'
 };
 
 /*
