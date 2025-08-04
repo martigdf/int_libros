@@ -1,30 +1,25 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonRow, IonCol, IonButton, IonGrid, IonItem, IonLabel, IonInput } from '@ionic/angular/standalone';
+import { IonContent, IonRow, IonCol, IonButton, IonGrid, IonInput} from '@ionic/angular/standalone';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { UserPost } from 'src/app/model/user';
 import { UsuariosService } from 'src/app/services/usuarios.service';
+import { ErrorMessagePipe } from 'src/app/pipes/error-message.pipe';
+import { ConfirmPasswordDirective } from 'src/app/validators/confirm-password.directive';
+import { AppEmailDirective } from 'src/app/validators/app-email.directive';
+import { AppPasswordDirective } from 'src/app/validators/app-password.directive';
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.page.html',
   styleUrls: ['./register.page.scss'],
   standalone: true,
-  imports: [IonInput, IonGrid, IonButton, IonCol, IonRow, IonContent, CommonModule, FormsModule]
+  imports: [IonInput, IonGrid, IonButton, IonCol, IonRow, IonContent, CommonModule, FormsModule, ErrorMessagePipe, ConfirmPasswordDirective, AppEmailDirective, AppPasswordDirective]
 })
 export class RegisterPage implements OnInit {
-
-  name = '';
-  lastname = '';
-  email = '';
-  username = '';
-  password = '';
-  confirmPassword = '';
-  role =''
-
   private apiUrl = environment.apiUrl;
 
   constructor(
@@ -35,6 +30,13 @@ export class RegisterPage implements OnInit {
 
   ngOnInit() {
   }
+
+  public name: string = '';
+  public lastname: string = '';
+  public email: string = '';
+  public username: string = '';
+  public password: string = '';
+  public confirmPassword: string = '';
 
   async onRegister(): Promise<void> {
 
@@ -54,10 +56,17 @@ export class RegisterPage implements OnInit {
       };
 
       const response = await this.usuarioService.postUser(newUser);
+      
       console.log('Usuario registrado:', response);
+
+      
+
       this.router.navigate(['/login']);
+    
     } catch (error) {
+      
       console.error('Error al registrar:', error);
+
     }
   }
 

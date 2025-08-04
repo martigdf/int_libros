@@ -1,41 +1,4 @@
-ion-card {
-  img,
-  .image-placeholder {
-    width: 100%;
-    height: 270px; // More vertical, like a book
-    object-fit: cover;
-    display: block;
-    border-radius: var(--ion-border-radius);
-  }
-
-  .image-placeholder {
-    background-color: var(--ion-color-light);
-    color: var(--ion-color-medium);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.9rem;
-    font-style: italic;
-    text-align: center;
-  }
-
-  ion-card-header {
-    padding: 8px;
-  }
-
-  ion-card-title {
-    font-size: 1rem;
-    color: var(--ion-color-dark);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  ion-card-subtitle {
-    font-size: 0.8rem;
-    color: var(--ion-color-medium);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
+ion-thumbnail {
+  --size: 200px;
+  --border-radius: 10px;
 }

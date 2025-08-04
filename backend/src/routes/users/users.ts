@@ -4,7 +4,7 @@ import { UserIdSchema, UserSchema, UserPostType, UserPostSchema, UserPutType, Us
 import { RequestSchema } from '../../schemas/requests/requestSchema.js';
 import bcrypt from 'bcryptjs';
 
-const usersRoute: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
+const userRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
   fastify.get('/:id',  {
     schema: {
       tags: ['users'],
@@ -194,10 +194,6 @@ const usersRoute: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<voi
           reply.code(404).send({ message: "Failed to insert user" });
           return;
         }
-        
-        //fastify.websocketServer.clients.forEach( (cliente) => {
-          //cliente.send("usuario");
-        //});
 
         const id = res.rows[0].id;
         
@@ -219,4 +215,4 @@ const usersRoute: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<voi
   });
 }
 
-export default usersRoute;
+export default userRoutes;

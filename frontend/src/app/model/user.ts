@@ -2,8 +2,9 @@ export interface User {
     id: string;
     name: string;
     username: string;
-    last_name: string;
+    lastname: string;
     email: string;
+    photo?: string;
     role: 'admin' | 'user';
 }
 
@@ -19,7 +20,7 @@ export interface UserPost {
 
 export interface PutUser {
   name?: string;
-  last_name?: string;
+  lastname?: string;
   username?: string;
   email?: string;
   role?: 'admin' | 'user';

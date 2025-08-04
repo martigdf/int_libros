@@ -1,8 +1,8 @@
 <ion-content class="ion-padding" fullscreen>
-  <ion-grid class="h-100" style="height: 100%;">
-    <ion-row justify-content-center align-items-center style="height: 100%;">
-      <ion-col size="12" size-md="6" size-lg="4" style="margin: 0 auto;">
-        <form class="ion-padding" fullscreen>
+  <ion-grid class="h-100" style="height: 100%;" class="ion-margin-top">
+    <ion-row justify-content-center align-items-center style="height: 100%;" class="ion-margin-top">
+      <ion-col size="12" size-md="5.5" size-lg="3.5" style="margin: 0 auto;" class="form-container">
+        <form class="ion-padding" fullscreen (ngSubmit)="onSubmit()">
           <ion-grid class="h-100" style="height: 100%;">
             <ion-row>
               <ion-col size="12">
@@ -12,12 +12,17 @@
                   fill="outline" 
                   placeholder="Ingresar email" 
                   name="email" 
-                  [(ngModel)]="model.email">
+                  [(ngModel)]="model.email"
+                  #emailRef="ngModel"
+                  required
+                  appEmail
+                  [errorText]= "emailRef.errors | errorMessage:'correo electrónico'"
+                  >
                 </ion-input>
               </ion-col>
             </ion-row>
             <ion-row>
-              <ion-col size="12">
+              <ion-col size="12" class="ion-margin-bottom">
                 <ion-input 
                   label="Contraseña" 
                   label-placement="floating" 
@@ -25,24 +30,30 @@
                   placeholder="Ingresar contraseña" 
                   name="password" 
                   [(ngModel)]="model.password" 
+                  #passwordRef="ngModel"
+                  required
+                  [errorText]= "passwordRef.errors | errorMessage:'contraseña'"
                   type="password">
                 </ion-input>
               </ion-col>
             </ion-row>
             <ion-row>
-              <ion-col size="12">
-                <ion-button 
-                  expand="full" 
-                  type="submit" 
-                  (click)="onSubmit()">
-                  Iniciar Sesión
-                </ion-button>
+              <ion-col size="12" class="ion-margin-top">
+              <ion-button 
+                expand="full" 
+                type="submit" 
+                (click)="onSubmit()">
+                Iniciar Sesión
+              </ion-button>
               </ion-col>
             </ion-row>
             <ion-row>
               <ion-col size="12" class="ion-text-center" style="margin-top: 16px;">
                 <span>¿No tienes una cuenta? 
-                  <a (click)="register()" style="text-decoration: underline;">Haz click aquí</a>
+                  <a 
+                    (click)="register()" 
+                    style="text-decoration: underline;"
+                  >Haz click aquí</a>
                 </span>
               </ion-col>
             </ion-row>

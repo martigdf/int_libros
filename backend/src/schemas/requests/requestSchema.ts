@@ -20,5 +20,6 @@ export const RequestSchema = Type.Object({
   creation_date: Type.String({ format: 'date-time', description: 'Fecha de creación de la solicitud' }),
   state: Type.String({ description: 'Estado actual de la solicitud' }),
   sender_user_id: Type.Number({ description: 'ID del usuario que solicita el préstamo' }),
-  receiver_user_id: Type.Number({ description: 'ID del usuario dueño del libro' })
+  receiver_user_id: Type.Number({ description: 'ID del usuario dueño del libro' }),
+  books: Type.Array(Type.String({ description: 'Nombre de los libros solicitados' }))
 });

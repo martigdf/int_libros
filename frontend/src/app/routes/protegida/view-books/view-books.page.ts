@@ -1,20 +1,22 @@
 import { Component, OnInit, inject, resource } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonGrid, IonRow, IonCol, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonButton, IonText, IonImg } from '@ionic/angular/standalone';
 import { BookService } from 'src/app/services/book.service';
-import { Router } from '@angular/router';
 import { Book } from 'src/app/model/book';
+import { IonicModule } from '@ionic/angular';
+import { AdminService } from 'src/app/services/admin.service';
+import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-view-books',
   templateUrl: './view-books.page.html',
   styleUrls: ['./view-books.page.scss'],
   standalone: true,
-  imports: [IonImg, IonText, IonButton, IonCardContent, IonCardSubtitle, IonCardTitle, IonCardHeader, IonCard, IonCol, IonRow, IonGrid, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule]
+  imports: [IonicModule, CommonModule, FormsModule]
 })
 export class ViewBooksPage implements OnInit {
 
+  private adminService = inject(AdminService);
   private booksService = inject(BookService);
   private router = inject(Router);
 
@@ -22,15 +24,24 @@ export class ViewBooksPage implements OnInit {
     loader: () => this.booksService.getAllBooks()
   });
 
+  async verLibro(id: string) {
+
+    this.router.navigate(['/books', id]);
+
+  }
+
   async eliminarLibro(id: string) {
-    await this.booksService.deleteBook(id);
+    const confirmado = confirm('¿Estás seguro de que deseas eliminar este libro?');
+    if (!confirmado) {
+      return;
+    }
+    await this.adminService.deleteBookAsAdmin(id);
     this.librosSignal.reload();
   }
 
   isArray(value: any): boolean {
     return Array.isArray(value);
   }
-
 
   constructor() { }
 

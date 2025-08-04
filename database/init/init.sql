@@ -46,6 +46,7 @@ CREATE TABLE IF NOT EXISTS requests (
             'pending',
             'accepted',
             'declined', 
+            'completed',
             'cancelled'
         )
     ) NOT NULL,
@@ -74,7 +75,7 @@ INSERT INTO users (name, lastname, username, email, role, password) VALUES
     ('Jorge', 'Melnik', 'melnik_1','jorgemelnik@gmail.com', 'admin', crypt('contraseña', gen_salt('bf'))),
     ('Martina', 'Guzmán', 'marti_42', 'martina@gmail.com', 'user', crypt('contraseña', gen_salt('bf'))),
     ('Luis', 'Di Muro', 'luis_89', 'luis@gmail.com', 'user', crypt('contraseña', gen_salt('bf'))),
-    ('Lucas', 'Rodriguez', 'luquitas_77', 'lucas@gmail.com', 'user', crypt('contraseña', gen_salt('bf')))
+    ('Carlitos', 'Tave', 'carlito_89', 'carlito@gmail.com', 'user', crypt('contraseña', gen_salt('bf')))
 ;
 
 INSERT INTO books (name, author, description, state, creation_date, location, owner_id) VALUES
@@ -86,27 +87,26 @@ INSERT INTO books (name, author, description, state, creation_date, location, ow
   ('Crónica de una muerte anunciada', 'Gabriel García Márquez', 'Novela clásica latinoamericana', 'available', CURRENT_TIMESTAMP, 'Localización 2', 2);
 
 INSERT INTO genres (name) VALUES
-  ('Science Fiction'),
-  ('Fantasy'),
-  ('Classic'),
-  ('Children');
+  ('Drama'),     
+  ('Aventura'),        
+  ('Romance'),        
+  ('Misterio'),       
+  ('Histórico'),     
+  ('Terror'),      
+  ('Biografía'),       
+  ('Poesía');
 
-  INSERT INTO requests (creation_date, state, sender_user_id, receiver_user_id) VALUES
-  (CURRENT_TIMESTAMP, 'pending', 3, 1),   -- Luis → Jorge
-  (CURRENT_TIMESTAMP, 'accepted', 2, 1),  -- Martina → Jorge
-  (CURRENT_TIMESTAMP, 'declined', 4, 1),   -- Lucas → Jorge
-  (CURRENT_TIMESTAMP, 'pending', 1, 2),   -- Jorge → Martina
-  (CURRENT_TIMESTAMP, 'accepted', 3, 2),  -- Luis → Martina
-  (CURRENT_TIMESTAMP, 'declined', 4, 2);  -- Lucas → Martina
 
-  INSERT INTO requests_books (id_request, id_book) VALUES
-    -- Solicitudes dirigidas a Jorge (usuario 1) - sus libros son 1,2,3,4
-    (1, 1),  -- Luis pide "1984" a Jorge
-    (1, 2),  -- Luis pide "The Hobbit" a Jorge
-    (2, 3),  -- Martina pide "Dune" a Jorge
-    (3, 1),  -- Lucas pide "1984" a Jorge
-    -- Solicitudes dirigidas a Martina (usuario 2) - sus libros son 5,6
-    (4, 5),  -- Jorge pide "Harry Potter" a Martina
-    (4, 6),  -- Jorge pide "Crónica de una muerte anunciada" a Martina
-    (5, 5),  -- Luis pide "Harry Potter" a Martina
-    (6, 6); 
+INSERT INTO books_genres (id_book, id_genre) VALUES
+-- 1984
+(1, 1), (1, 5),
+-- The Hobbit
+(2, 2), (2, 6),
+-- Dune
+(3, 1), (3, 8),
+-- El Principito
+(4, 4), (4, 3),
+-- Harry Potter
+(5, 2), (5, 8),
+-- Crónica de una muerte anunciada
+(6, 3), (6, 5);

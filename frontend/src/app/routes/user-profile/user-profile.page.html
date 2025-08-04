@@ -2,61 +2,74 @@
   [fullscreen]="true" 
   class="ion-padding">
   <ion-grid 
-    style="height: 100%;">
+    class="ion-align-items-center
+      ion-justify-content-center"
+  >
     <ion-row 
-      justify-content-center 
-      align-items-center 
-      style="height: 100%;">
+    class="
+      ion-justify-content-center 
+      ion-align-items-center 
+      ion-text-center 
+      ion-margin-top 
+      ion-margin-bottom">
       <ion-col 
         size="12" 
         size-md="8" 
         size-lg="6" 
-        style="margin: 0 auto;">
+      >
         @if(user()){
-          <ion-card>
+          <ion-card class="ion-padding ion-text-center">
             <ion-card-header>
               <ion-card-title>Mi cuenta</ion-card-title>
             </ion-card-header>
 
-            <ion-card-content 
-              class="ion-padding">
-    
-              <ion-label 
-                class="ion-margin-bottom">
-                <h2>Nombre</h2>
-                <ion-text>{{ user().name }} {{ user().last_name }}</ion-text>
-              </ion-label>
+            <ion-card-content>
 
-              <ion-label 
-                class="ion-margin-bottom">
-                <h2>Username</h2>
-                <ion-text>{{ user().username }}</ion-text>
-              </ion-label>
+              <ion-row class="ion-justify-content-center ion-margin-bottom">
+                <ion-col size="auto" class="ion-text-center">
+                <ion-avatar
+                  class="ion-margin-bottom ion-align-self-center" 
+                  (click)="takePhoto()">
+                  <img alt="" src="{{ this.userPhoto() }}" />
+                </ion-avatar>
+                </ion-col>
+              </ion-row>
+              
+              <ion-row class="ion-justify-content-center">
+                <ion-col size="auto" class="ion-text-center">
+                  <h2><strong class="ion-margin-top">Nombre: </strong></h2>
+                  <ion-text class="ion-margin-bottom ion-margin-top">{{ user().name }} {{ user().last_name }}</ion-text>
 
-              <ion-label 
-                class="ion-margin-bottom">
-                <h2>Email</h2>
-                <ion-text>{{ user().email }}</ion-text>
-              </ion-label>
+                  <h2><strong class="ion-margin-top">Nombre de usuario:</strong></h2>
+                  <ion-text class="ion-margin-bottom ion-margin-top">{{ user().username }}</ion-text>
 
-              <!-- Botón para eliminarse -->
-              <ion-button 
-                color="danger" 
-                expand="block" 
-                (click)="deleteSelf()">
-                Eliminar mi cuenta
-              </ion-button>
+                  <h2><strong class="ion-margin-top">Email:</strong></h2>
+                  <ion-text class="ion-margin-bottom ion-margin-top">{{ user().email }}</ion-text>
+                </ion-col>
+              </ion-row>
 
-              <!-- Botón de volver al Home -->
-              <ng-container 
-                *ngIf="mainStore.isUser()"
-              >
-                <ion-button 
-                  expand="block" 
-                  (click)="goToHome()">
-                  Volver al Home
-                </ion-button>
-              </ng-container>
+              <ion-row class="ion-justify-content-center ion-margin-top">
+                <ion-col size="auto">
+                    <ion-button 
+                      color="primary" 
+                      expand="block" 
+                      (click)="modifyData()"  
+                    >
+                      Modificar datos
+                    </ion-button>
+                  </ion-col>
+              </ion-row>
+              <ion-row class="ion-justify-content-center">
+                <ion-col size="auto">
+                  <ion-button 
+                    color="danger" 
+                    expand="block" 
+                    (click)="deleteSelf()"
+                  >
+                    Eliminar mi cuenta
+                  </ion-button>
+                </ion-col>
+              </ion-row>
             </ion-card-content>
           </ion-card>
         }

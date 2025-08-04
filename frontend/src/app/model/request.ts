@@ -1,10 +1,11 @@
 export interface Request{
   id: number;
   creation_date: string;
-  state: 'pending' | 'accepted' | 'declined' | 'cancelled';
+  state: 'pending' | 'accepted' | 'declined' | 'cancelled' | 'completed';
   sender_user_id: number;
   receiver_user_id: number;
-  books: number[];  
+  books: string[];  
+  has_loan?: boolean; 
 }
 
 export interface RequestPost {

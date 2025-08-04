@@ -6,7 +6,8 @@
           label="Nombre"
           labelPlacement="floating"
           name="name" 
-          [(ngModel)]="name" 
+          [ngModel]="name()" 
+          (ngModelChange)="name.set($event)"
           required
           minlength="3"
         >
@@ -20,8 +21,9 @@
           label="Apellido"
           labelPlacement="floating"
           type="text" 
-          name="last_name" 
-          [(ngModel)]="last_name" 
+          name="lastname" 
+          [ngModel]="lastname()" 
+          (ngModelChange)="lastname.set($event)"
           required
           minlength="3"
         >
@@ -37,7 +39,8 @@
         labelPlacement="floating"
         type="email"
         name="email"
-        [(ngModel)]="email"
+        [ngModel]="email()"
+        (ngModelChange)="email.set($event)"
         required
         email
         minlength="5"
@@ -45,23 +48,28 @@
       </ion-input>
     </ion-col>
   </ion-row>
-  <ion-row *ngIf="!(mainStore.isAdmin() && user()?.id === mainStore.userId())">
-    <ion-col size="12">
-        <ion-select
-          label="Roles"
-          labelPlacement="floating"
-          fill="outline"
-          multiple="true" 
-          name="roles"
-          [(ngModel)]="roles"
-          required
-          >
-          @for (rol of totalRoles(); track rol) {
-            <ion-select-option [value]="rol">{{ rol }}</ion-select-option>
-          }
-        </ion-select>
-    </ion-col>
-  </ion-row>
+
+  @if (!(isAdmin() && user()?.id === userId())) {
+    <ion-row>
+      <ion-col size="12">
+          <ion-select
+            label="Roles"
+            labelPlacement="floating"
+            fill="outline"
+            multiple="true" 
+            name="roles"
+            [ngModel]="role()"
+            (ionChange)="role.set($event.detail.value)"
+            required
+            >
+            @for (rol of totalRoles(); track rol) {
+              <ion-select-option [value]="rol">{{ rol }}</ion-select-option>
+            }
+          </ion-select>
+      </ion-col>
+    </ion-row>
+  }
+  
   <ion-row>
       <ion-col size="12">
           <ion-button 

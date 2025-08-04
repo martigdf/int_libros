@@ -10,9 +10,11 @@ export interface Book {
   id: number;
   name: string;
   author: string;
-  state: 'available' | 'requested' | 'reserved' | 'loaned' | 'returned' | 'cancelled' | 'unavailable';
-  image?: string;
+  state: 'available' | 'unavailable';
+  genres?: string[];
+  photo?: string;
   owner_id: number;
+  owner_username?: string;
   publication?: Publication;
 }
 export interface BookPost {

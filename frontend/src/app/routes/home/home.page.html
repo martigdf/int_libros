@@ -9,19 +9,33 @@
               <ion-thumbnail 
                 slot="start">
                 <img 
-                  [src]="book || 'assets/default-book.png'" 
+                  [src]="book.photo || 'assets/default-book.png'" 
                   alt="{{ book.name }}">
               </ion-thumbnail>
               <ion-label>
-                <h2>
-                  {{ book.name }}
-                </h2>
-                <p>
-                  {{ book.author }}
-                </p>
-                <p><strong>
-                  {{ book.state }}
-                </strong></p>
+                <h2>{{ book.name }}</h2>
+                <p>{{ book.author }}</p>
+                @if (book.genres && book.genres.length > 0) {
+                  <p>Géneros: {{ book.genres.join(', ') }}</p>
+                } @else {
+                  <p>Géneros: Ninguno</p>
+                }
+                @if (book.state == 'available') {
+                  <p class="ion-margin-top">Estado: Disponible</p>
+                } @else {
+                  <p class="ion-margin-top">Estado: No disponible</p>
+                }
+                @if (book.owner_id.toString() == this.mainStore.userId()) {
+                  <p>Publicado por ti</p>
+                } @else {
+                  <p>
+                    Publicado por 
+                    <ion-text
+                      color="primary">
+                      {{ book.owner_username }}
+                    </ion-text>
+                  </p>
+                }
               </ion-label>
               <ion-button 
                 fill="outline" 

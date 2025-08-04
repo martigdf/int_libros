@@ -1,12 +1,16 @@
-import { Component, output, Input } from '@angular/core';
+import { Component, output, Input, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { IonCol, IonRow, IonInput, IonButton, IonGrid, IonContent } from "@ionic/angular/standalone";
+import { IonCol, IonRow, IonInput, IonButton, IonGrid, IonContent, IonText } from "@ionic/angular/standalone";
 import { Login  } from 'src/app/model/user';
 import { Router } from '@angular/router';
+import { AppEmailDirective } from 'src/app/validators/app-email.directive';
+import { ErrorMessagePipe } from 'src/app/pipes/error-message.pipe';
+
 @Component({
   selector: 'app-login-form',
   templateUrl: './login-form.component.html',
-  imports: [IonCol, IonRow, IonInput, IonButton, FormsModule, IonGrid, IonContent]
+  styleUrls: ['./login-form.component.scss'],
+  imports: [IonCol, IonRow, IonInput, IonButton, FormsModule, IonGrid, IonContent, AppEmailDirective, ErrorMessagePipe ],
 })
 
 export class LoginFormComponent {
@@ -15,8 +19,8 @@ export class LoginFormComponent {
 
   public submitted = output<Login>();
 
-  public email = ''
-  public password = ''
+  email = signal<string>('');
+  password = signal<string>(''); 
 
   constructor(private router: Router) {}
   

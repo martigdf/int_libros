@@ -3,11 +3,8 @@ import { query } from "../../services/database.js";
 import { BookIdSchema, BookPostSchema, BookPostType, BookSchema } from '../../schemas/book/bookSchema.js';
 import { UserType } from '../../schemas/user/userSchema.js';
 import { GenresResponseSchema } from '../../schemas/book/bookSchema.js';
-//import multipart from '@fastify/multipart';
 
 const bookRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
-
-  //fastify.register(multipart);
 
   fastify.get('/', {
     schema: {
@@ -24,7 +21,12 @@ const bookRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<voi
     },
   handler: async (request, reply) => {
       const res = await query (
-        `SELECT * FROM books`
+        `SELECT b.id, b.name, b.author, b.description, b.state, b.location, b.owner_id,
+          COALESCE(array_agg(g.name) FILTER (WHERE g.name IS NOT NULL), '{}') AS genres
+        FROM books b
+        LEFT JOIN books_genres bg ON b.id = bg.id_book
+        LEFT JOIN genres g ON g.id = bg.id_genre
+        GROUP BY b.id`
       );
       if (res.rowCount === 0) {
         return reply.status(404).send({ message: "No hay ningún libro publicado" });
@@ -48,7 +50,13 @@ const bookRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<voi
     handler: async (request, reply) => {
       const {id} = request.params as { id: number };
       const res = await query (
-        `SELECT * FROM books WHERE id = $1`,
+        `SELECT b.id, b.name, b.author, b.description, b.state, b.location, b.owner_id,
+          COALESCE(array_agg(g.name) FILTER (WHERE g.name IS NOT NULL), '{}') AS genres
+        FROM books b
+        LEFT JOIN books_genres bg ON b.id = bg.id_book
+        LEFT JOIN genres g ON g.id = bg.id_genre
+        WHERE b.id = $1
+        GROUP BY b.id`,
         [id]
       );
       if (res.rowCount === 0) {
@@ -82,9 +90,14 @@ const bookRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<voi
       const user = request.user as UserType;
 
       const res = await query(
-        `SELECT books.*
-        FROM books
-        WHERE owner_id = $1`,
+        `SELECT b.id, b.name, b.author, b.description, b.state, b.location, b.owner_id,
+          COALESCE(array_agg(g.name) FILTER (WHERE g.name IS NOT NULL), '{}') AS genres
+        FROM books b
+        LEFT JOIN books_genres bg ON b.id = bg.id_book
+        LEFT JOIN genres g ON g.id = bg.id_genre
+        WHERE b.owner_id = $1
+        GROUP BY b.id
+        `,
         [user.id]
       );
 
@@ -145,6 +158,10 @@ const bookRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<voi
         for (const genreId of genres) {
           await query(`INSERT INTO books_genres (id_book, id_genre) VALUES ($1,$2)`, [bookId, genreId]);
         }
+
+        fastify.websocketServer.clients.forEach( (client) => {
+          client.send("books");
+        });
 
         reply.code(201).send({
           message: 'Libro publicado correctamente',

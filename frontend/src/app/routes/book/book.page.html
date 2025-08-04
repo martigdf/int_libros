@@ -1,41 +1,88 @@
 <ion-content class="ion-padding">
 
   @if (book()) {
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title>{{ book().name }}</ion-card-title>
-        <ion-card-subtitle>por {{ book().author }}</ion-card-subtitle>
-      </ion-card-header>
+    
+    <ion-grid class="ion-text-center">
+        <ion-row class="ion-justify-content-center ion-align-items-center">
+          <ion-col size="12" size-sm="10" size-md="8" size-lg="6" size-xl="4">
+            <ion-card class="ion-text-center">
 
-      <ion-card-content>
-        <ion-item>
-          <ion-label>
-            <h2>ID del libro</h2>
-            <p>{{ book().id }}</p>
-          </ion-label>
-        </ion-item>
+              <ion-card-header class="ion-text-center ion-margin-bottom">
+                <ion-row class="ion-justify-content-center ion-margin-bottom">
+                <ion-col size="auto" class="ion-text-center">
+                  <ion-thumbnail>
+                    <ion-img src="{{ book().photo }}" alt="Foto del libro"></ion-img>
+                  </ion-thumbnail>
+                </ion-col>
+                </ion-row>
+                <ion-card-title>{{ book().name }}</ion-card-title>
+                <ion-card-subtitle>por {{ book().author }}</ion-card-subtitle>
+              </ion-card-header>
 
-        <ion-item>
-          <ion-label>
-            <h2>Estado</h2>
-            @if (book().state == 'available') {
+              <ion-card-content>
+                <ion-item>
+                  <ion-label class="ion-text-center">
+                    <h2>Géneros</h2>
+                    @if (this.book().genres !== undefined) {
 
-              <p>Disponible</p>
+                       <p>{{ this.book().genres.join(', ') }}</p>
 
-            }
-          </ion-label>
-        </ion-item>
-      </ion-card-content>
-      <ion-card-content>
-        <ion-button expand="full" color="primary" (click)="requestBook()">
-          Solicitar préstamo
-        </ion-button>
-      </ion-card-content>
-    </ion-card>
+                    } @else {
+
+                      <p>Ninguno</p>
+
+                    }
+                  </ion-label>
+                </ion-item>
+
+                <ion-item>
+                  <ion-label class="ion-text-center">
+                    <h2>Estado</h2>
+                    @if (book().state == 'available') {
+                      <p>Disponible</p>
+                    } @else {
+                      <p>No disponible</p>
+                    }
+                  </ion-label>
+                </ion-item>
+
+                <ion-item>
+                  <ion-label class="ion-text-center">
+                    @if (book().owner_id == this.mainStore.userId()) {
+                      <h2>Publicado por ti</h2>
+                    } @else {
+                      <p>
+                        Publicado por 
+                        <ion-text
+                          color="primary">
+                          {{ book().owner_username }}
+                        </ion-text>
+                      </p>
+                    }
+                  </ion-label>
+                </ion-item>
+
+              </ion-card-content>
+              @if (book().owner_id !== mainStore.userId() 
+                && book().state === 'available' 
+                && mainStore.usuario()?.role !== 'admin') {
+                <ion-card-content>
+                  <ion-button expand="full" color="primary" (click)="requestBook()">
+                    Solicitar préstamo
+                  </ion-button>
+                </ion-card-content>
+              }
+            </ion-card>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+
   } @else {
+
     <ion-text>
       <p>Cargando información del libro...</p>
     </ion-text>
+  
   }
 
 </ion-content>

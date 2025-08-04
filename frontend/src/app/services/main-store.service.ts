@@ -8,8 +8,8 @@ import { JWTPayload } from '../model/payload';
 export class MainStoreService {
 
   constructor() { if (this.token()) {
-      this.decodePayload();
-    }}
+    this.decodePayload();
+  }}
 
   public usuario = signal<User | null>(null);
 
@@ -76,20 +76,20 @@ export class MainStoreService {
       const roleValue: 'admin' | 'user' = payload.role === 'admin' ? 'admin' : 'user';
 
       // Actualiza señales 
-      this.userId.set(payload.user_id);
+      this.userId.set(payload.id);
       this.userName.set(payload.name);
-      this.userLastName.set(payload.last_name);
-      this.userUsername.set(payload.username);
+      this.userLastName.set(payload.lastname);
+      this.userUsername.set(payload.user);
       this.userEmail.set(payload.email);
       this.userRole.set(roleValue);
       console.log('Payload decodificado:', payload);
 
       // Actualiza usuario completo
       this.usuario.set({
-        id: payload.user_id,
+        id: payload.id,
         name: payload.name,
-        last_name: payload.last_name,
-        username: payload.username,
+        lastname: payload.lastname,
+        username: payload.user,
         email: payload.email,
         role: roleValue
         

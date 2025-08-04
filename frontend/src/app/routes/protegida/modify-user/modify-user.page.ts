@@ -1,4 +1,4 @@
-import { Component, OnInit,inject, resource, signal } from '@angular/core';
+import { Component, OnInit,inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from "@ionic/angular";
@@ -7,8 +7,6 @@ import { ActivatedRoute } from '@angular/router';
 import { UserFormComponent } from "../components/user-form/user-form.component";
 import { User } from 'src/app/model/user';
 import { PutUser } from 'src/app/model/user';
-import { Router } from '@angular/router';
-import { MainStoreService } from 'src/app/services/main-store.service';
 
 @Component({
   selector: 'app-modify-user',
@@ -21,8 +19,6 @@ export class ModifyUserPage implements OnInit {
 
   private usuarioService = inject(UsuariosService);
   private route = inject(ActivatedRoute);
-  private mainStore = inject(MainStoreService);
-  private router = inject(Router);
   user = signal<User | null>(null);
   
   ngOnInit() {
@@ -41,10 +37,12 @@ export class ModifyUserPage implements OnInit {
 
     const updatedData = await this.usuarioService.putUser(currentUser.id, payload);
     const updatedUser: User = { ...currentUser, ...updatedData };
+    this.user.set(updatedUser);
 
-    // Actualiza signal y localStorage usando setUser
-    this.mainStore.setUser(updatedUser);
-
-    this.router.navigate(['/panel-admin/usuarios-listado']);
+    if (updatedData && Object.keys(updatedData).length > 0) {
+      alert('Usuario modificado correctamente');
+    } else {
+      alert('No se realizaron cambios en el usuario');
+    }
   }
 }

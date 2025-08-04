@@ -4,7 +4,7 @@ import { environment } from 'src/environments/environment';
 import { User, UserPost } from '../model/user';
 import { firstValueFrom } from 'rxjs';
 import { MainStoreService } from './main-store.service';
-import { signal, effect } from '@angular/core';
+import { signal } from '@angular/core';
 import { PutUser } from '../model/user';
 
 @Injectable({
@@ -19,14 +19,17 @@ export class UsuariosService {
 
   public id = signal<User | undefined>(undefined);
 
+  // Método para obtener el usuario actual
   async getAll(): Promise<User[]> {
     return firstValueFrom(this.httpClient.get<User[]>(this.apiUrl + "users/all"))
   }
 
+  // Método para obtener el usuario por ID
   getUserId(): User | undefined {
     return this.id();
   }
 
+  // Metodo para crear un usuario
   async postUser(data: UserPost) {
     const url = this.apiUrl + "users/register";
     const userConRol: UserPost = {
@@ -40,24 +43,65 @@ export class UsuariosService {
     );
   }
 
+  // Método para actualizar un usuario
   async putUser(id: string, data: PutUser) {
     const url = `${this.apiUrl}users/${id}`;
     return await firstValueFrom(this.httpClient.put<PutUser>(url, data));
   }
 
-  async getById(id_usuario:number){
-    const token = this.mainStore.token(); 
-    return firstValueFrom(this.httpClient.get<User>(this.apiUrl+"users"+"/"+id_usuario,
-      {
-      headers: { Authorization: `Bearer ${token}` }
-    }));
+  // Método para obtener el usuario por ID
+  async getById(userId: number) {
+
+    const user = await firstValueFrom(this.httpClient.get<User>(this.apiUrl + "users/" + userId))
+
+    user.photo = this.apiUrl + 'photos/users/' + userId
+
+    return user;
+  
   }
 
-  async deleteUser(id: string) {
-    return await firstValueFrom(this.httpClient.delete(`${this.apiUrl}admin/users/${id}`, {
-      headers: { Authorization: `Bearer ${this.mainStore.token()}`
-      }
-    }));
+  async getUsernameById(userId: number) {
+
+    const user = await this.getById(userId);
+
+    return user.username
+
+
+  }
+
+  // Metodo para verificar credenciales para directiva
+  async verificarCredenciales(email: string, password: string): Promise<boolean> {
+    try {
+      const res = await firstValueFrom(this.httpClient.post(this.apiUrl + "auth/login", 
+        { email, password }, { observe: 'response' }));
+      return res.status === 200;
+    } catch {
+      return false;
+    }
+  }
+
+  async submitPhoto(photo: string) {
+
+    if ( this.mainStore.userId() === undefined || photo === '' ) {
+
+      return
+
+    }
+
+    const response = await fetch(photo);
+    const blob = await response.blob();
+
+    const formData = new FormData();
+    formData.append('file', blob, this.mainStore.userId() + '.jpg')
+
+    await firstValueFrom(this.httpClient.put(this.apiUrl + 'photos/users/' + this.mainStore.userId(), formData));
+
+  }
+
+  getPhoto(userId: string) {
+
+    return (this.apiUrl + 'photos/users/' + userId)
+
   }
   
   constructor() { }

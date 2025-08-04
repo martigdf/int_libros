@@ -1,0 +1,29 @@
+.form-container {
+  max-width: 450px;
+  margin: 40px auto;
+  background: var(--ion-background-color);
+  padding: 24px 20px;
+  border-radius: 12px;
+  box-shadow: 0 6px 15px rgba(var(--ion-color-dark-rgb), 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.photo-picker {
+  width: 120px;
+  aspect-ratio: 1;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: var(--ion-color-light);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(var(--ion-color-light-rgb), 0.15);
+}
+
+.photo-icon {
+  font-size: 4rem;
+  color: #888;
+}

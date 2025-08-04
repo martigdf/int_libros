@@ -1,9 +1,11 @@
 <ion-content class="ion-padding">
   @if (usuariosSignal.hasValue()) {
+  <ion-grid>
+    <ion-row>
     @for (user of usuariosSignal.value(); track user.id) {
       <ion-card>
         <ion-card-header>
-          <ion-card-title>{{ user.name }} {{ user.last_name }}</ion-card-title>
+          <ion-card-title>{{ user.name }} {{ user.lastname }}</ion-card-title>
           <ion-card-subtitle>{{ user.email }}</ion-card-subtitle>
         </ion-card-header>
 
@@ -13,23 +15,35 @@
           </ion-badge>
           <ion-row class="ion-justify-content-end ion-margin-top">
             <ion-col size="auto">
-              <ion-button size="small" fill="outline" color="primary"
-                (click)="modificarUsuario(user.id)">
-                Modificar
-              </ion-button>
-              <ion-button size="small" fill="outline" color="danger"
-                (click)="eliminarUsuario(user.id)">
-                Eliminar
-              </ion-button>
+              <ion-item lines="none" class="ion-margin-top">
+                <ion-button 
+                  size="small" 
+                  fill="outline" 
+                  color="primary"
+                  (click)="modificarUsuario(user.id)">
+                  Modificar
+                </ion-button>
+                <ion-button 
+                  class="ion-margin-start"
+                  size="small" 
+                  fill="outline" 
+                  color="danger"
+                  (click)="eliminarUsuario(user.id)">
+                  Eliminar
+                </ion-button>
+              </ion-item>
             </ion-col>
           </ion-row>
         </ion-card-content>
       </ion-card>
-    }
+      }
+    </ion-row>
+  </ion-grid>
   }
   @else {
     <ion-text color="medium">
       <h2 class="ion-text-center ion-margin-top">No hay usuarios</h2>
     </ion-text>
+      
   }
 </ion-content>

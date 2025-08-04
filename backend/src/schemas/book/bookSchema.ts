@@ -19,12 +19,12 @@ export const BookSchema = Type.Object({
     name: Type.String({ minLength: 2, maxLength: 50 }),
     description: Type.Optional(Type.String({ minLength: 10, maxLength: 500 })),
     author: Type.String({ minLength: 2, maxLength: 50 }),
-    genre: Type.Optional(
+    genres:
         Type.Array(
             Type.String({ minLength: 2, maxLength: 30 }),
             { description: 'Lista de géneros del libro' }
         )
-    ),
+    ,
     date_published: Type.Optional(Type.String({ format: 'date', description: 'Fecha de publicación del libro' })),
     location: Type.Optional(Type.String({ minLength: 5, maxLength: 100 })),
     state: Type.Union([

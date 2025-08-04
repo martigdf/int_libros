@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authenticatedGuard } from './guards/authenticated.guard';
+import { adminGuard } from './guards/admin.guard';
 
 export const routes: Routes = [
 
@@ -16,6 +17,10 @@ export const routes: Routes = [
         path: 'register',
         loadComponent: () =>
           import('./routes/auth/pages/register/register.page').then((m) => m.RegisterPage),
+      },
+      {
+        path: 'logout',
+        loadComponent: () => import('./routes/auth/pages/logout/logout.page').then( m => m.LogoutPage)
       },
       {
         path: '',
@@ -35,28 +40,33 @@ export const routes: Routes = [
   },
   {
     path: 'books/:id',
+    canActivate: [authenticatedGuard],
     loadComponent: () =>
       import('./routes/book/book.page').then((m) => m.BookPage),
   },
-    {
+  {
     path: 'publish-book',
+    canActivate: [authenticatedGuard],
     loadComponent: () => import('./routes/publish-book/publish-book.page').then( m => m.PublishBookPage)
   },
   {
     path: 'my-books',
-    //canActivate: [authenticatedGuard],
+    canActivate: [authenticatedGuard],
     loadComponent: () => import('./routes/my-books/my-books.page').then( m => m.MyBooksPage)
   },
   {
     path: 'myreque-list',
+    canActivate: [authenticatedGuard],
     loadComponent: () => import('./routes/myreque-list/myreque-list.page').then( m => m.MyrequeListPage)
   },
   {
     path: 'myreceived-list',
+    canActivate: [authenticatedGuard],
     loadComponent: () => import('./routes/myreceived-list/myreceived-list.page').then( m => m.MyreceivedListPage)
   },
   {
     path: 'user-profile/:id',
+    canActivate: [authenticatedGuard],
     loadComponent: () =>
       import('./routes/user-profile/user-profile.page').then((m) => m.UserProfilePage),
   },
@@ -65,7 +75,7 @@ export const routes: Routes = [
   // --- Rutas protegidas (solo para administradores) ---
   {
     path: 'panel-admin',
-    //canActivate: [authenticatedGuard], // aquí podrías reemplazar por un guard específico de admin
+    canActivate: [authenticatedGuard, adminGuard],
     children: [
       {
         path: '',
@@ -80,7 +90,6 @@ export const routes: Routes = [
       },
       {
         path: 'usuarios-listado',
-        //canActivate: [authenticatedGuard],
         loadComponent: () => import('./routes/protegida/usuarios-listado/usuarios-listado.page').then((m) => m.UsuariosListadoPage)
       },
       {
@@ -88,9 +97,5 @@ export const routes: Routes = [
         loadComponent: () => import('./routes/protegida/modify-user/modify-user.page').then((m) => m.ModifyUserPage)
       }
     ]
-  },
-  {
-    path: 'logout',
-    loadComponent: () => import('./routes/auth/pages/logout/logout.page').then( m => m.LogoutPage)
   },
 ];

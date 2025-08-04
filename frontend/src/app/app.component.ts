@@ -1,5 +1,4 @@
 import { Component, computed, signal } from '@angular/core';
-import { IonApp, IonMenu, IonContent, IonRouterOutlet, IonToolbar, IonHeader, IonTitle, IonButtons, IonMenuButton, IonFooter, IonButton } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
 import { inject } from '@angular/core';
 import { MainStoreService } from './services/main-store.service';
@@ -8,13 +7,17 @@ import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { User } from './model/user';
+import { IonicModule } from '@ionic/angular';
+import { UsuariosService } from './services/usuarios.service';
 
+const token = localStorage.getItem('token')
+const socket = new WebSocket("ws://localhost/backend/")
 
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
-  imports: [IonApp, IonMenu, IonContent, FormsModule, CommonModule, IonRouterOutlet, IonToolbar, IonHeader, IonTitle, IonButtons, IonMenuButton, IonFooter, IonButton],
+  imports: [IonicModule, FormsModule, CommonModule],
 })
 export class AppComponent {
 
@@ -24,8 +27,10 @@ export class AppComponent {
   private httpClient = inject(HttpClient);
 
   public isHome = signal<boolean>(false);
+  
   public usuario = signal<User | null>(null);
   public usuarioId = computed(() => this.mainStore.usuario()?.id ?? '');
+  public userPhoto = signal<string | undefined>("https://ionicframework.com/docs/img/demos/avatar.svg")
 
   constructor() {
     this.router.events.subscribe(() => {
@@ -33,9 +38,43 @@ export class AppComponent {
     });
   }
 
-  isLoggedIn(): boolean {
-    return this.mainStore.token() !== null;
+  async ngOnInit(){
+
+    this.userPhoto.set(this.apiUrl + 'photos/users/' + this.usuarioId() || "https://ionicframework.com/docs/img/demos/avatar.svg")
+
+    socket.addEventListener("message", (event) => {
+
+      if (event.data == 'userPhoto') {
+
+        console.log("Cambiar foto")
+        
+        const newPhoto = this.apiUrl + 'photos/users/' + this.usuarioId();
+        this.userPhoto.set(newPhoto);
+
+      }
+      
+    })
+
   }
+
+  isLoggedIn(): boolean {
+
+    return this.mainStore.token() !== null;
+
+  }
+
+  public isUser = computed(() => {
+    const isUser = this.usuario()?.role === 'user';
+    console.log('isUser:', isUser);
+    return isUser;
+  });
+
+
+  public isAdmin = computed(() => {
+    const isAdmin = this.usuario()?.role === 'admin';
+    console.log('isAdmin:', isAdmin);
+    return isAdmin;
+  });
 
   async logout() {
     try {
@@ -83,24 +122,5 @@ export class AppComponent {
   goHome() {
     this.router.navigate(['/home']);
   }
-
-  public isAdmin = computed(() => {
-    const isAdmin = this.usuario()?.role === 'admin';
-    console.log('isAdmin:', isAdmin);
-    return isAdmin;
-  });
-
-  public isUser = computed(() => {
-    const isUser = this.usuario()?.role === 'user';
-    console.log('isUser:', isUser);
-    return isUser;
-  });
-
-  public isAdminAndUser = computed(() => {
-    const user = this.usuario();
-    const isBoth = user?.role === 'admin' || user?.role === 'user';
-    console.log('isAdminAndUser:', isBoth);
-    return isBoth;
-  });
 
 }

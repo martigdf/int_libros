@@ -29,4 +29,16 @@ export class RequestsService {
     return await firstValueFrom(this.http.get<Request[]>(`${this.apiUrl}requests/received`));
   }
 
+  responderSolicitud(id: number, state: 'accepted' | 'declined' | 'cancelled'): Promise<any> {
+    return this.http.patch(`${this.apiUrl}requests/${id}/response`, { state }).toPromise();
+  }
+
+  confirmPickup(id: number): Promise<any> {
+    return this.http.patch(`${this.apiUrl}requests/${id}/confirm-pickup`, {}).toPromise();
+  }
+
+  confirmReturn(id: number): Promise<any> {
+    return this.http.patch(`${this.apiUrl}requests/${id}/confirm-return`, {}).toPromise();
+  }
+
 }

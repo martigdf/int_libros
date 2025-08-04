@@ -15,9 +15,18 @@
               <ion-label>
                 <h2>Solicitud #{{ req.id }}</h2>
                 <p>Estado: {{ req.state }}</p>
-                <p>Fecha: {{ req.creation_date }}</p>
-                <p>Libros solicitados:</p>
+                <p>Fecha: {{ req.creation_date | date:'dd-MM-yyyy' }}</p>
+                <p>Libro solicitado:</p>
+                <ion-note *ngFor="let bookName of req.books" color="primary">
+                  {{ bookName }}
+                </ion-note>
               </ion-label>
+              @if (req.state === 'pending') {
+                <ion-button 
+                  color="danger" 
+                  (click)="cancelarSolicitud(req.id)"
+                >Cancelar</ion-button>
+              }
             </ion-item>
           }
         </ion-list>

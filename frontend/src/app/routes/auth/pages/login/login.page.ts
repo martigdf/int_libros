@@ -41,7 +41,13 @@ export class LoginPage implements OnInit {
       }));
       
       this.mainStore.setUser(usuario);
-      this.router.navigate(['/home']);
+
+      // Redirige a home si es usuario - admin a panel-admin
+      if (this.mainStore.isAdmin()) {
+        this.router.navigate(['/panel-admin']);
+      } else {
+        this.router.navigate(['/home']);
+      }
     }
     catch (error) {
       console.error("Login failed", error);

@@ -14,28 +14,24 @@ const root: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => 
         return { root: true }
 
       },
-      wsHandler: (socket: WebSocket, req) => {
+      wsHandler: (socket: WebSocket & {userId?: number}, req) => {
 
-        socket.send("Bienvenido cliente");
-        fastify.websocketServer.clients.forEach( (cliente) => {
-          cliente.send("Cantidad clientes: " + fastify.websocketServer.clients.size);
-        });
+        const authHeader = req.headers['authorization'];
+        let userId: number | undefined;
 
-        socket.on("message", chunk => {
+        if (authHeader && authHeader.startsWith("Bearer ")) {
 
-          fastify.websocketServer.clients.forEach((cliente) => {
+          const token = authHeader.slice("Bearer ".length);
+          const decoded = fastify.jwt.decode<{ id: number }>(token);
 
-            if (cliente !== socket) {
-
-              cliente.send(chunk.toString());
-
-            }
-
-          });
-
-          console.log(chunk.toString());
-
-        });
+          if (decoded && typeof decoded === 'object' && decoded.id) {
+            
+            userId = decoded.id;
+            socket.userId = userId;
+          
+          }
+        
+        }
 
       }
 

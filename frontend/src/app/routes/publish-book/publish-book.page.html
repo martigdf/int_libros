@@ -1,66 +1,53 @@
-<ion-content [fullscreen]="true">
+<ion-content [fullscreen]="true" class="ion-padding">
+  <div class="form-container">
     <form (ngSubmit)="onSubmit()">
 
-    <ion-item>
-      <ion-label 
-        position="floating">Título del libro
-      </ion-label>
-      <ion-input 
-        [(ngModel)]="book().name" 
-        name="name" 
-        required>
-      </ion-input>
-    </ion-item>
+      <ion-item>
+        <ion-label position="floating">Título del libro</ion-label>
+        <ion-input [(ngModel)]="book().name" name="name" required></ion-input>
+      </ion-item>
 
-    <ion-item>
-      <ion-label 
-        position="floating">Autor
-      </ion-label>
-      <ion-input 
-        [(ngModel)]="book().author" 
-        name="author" 
-        required>
-      </ion-input>
-    </ion-item>
+      <ion-item>
+        <ion-label position="floating">Autor</ion-label>
+        <ion-input [(ngModel)]="book().author" name="author" required></ion-input>
+      </ion-item>
 
-    <ion-item>
-      <ion-label position="floating">Descripción</ion-label>
-      <ion-textarea 
-        [(ngModel)]="book().description" 
-        name="description" 
-        required>
-      </ion-textarea>
-    </ion-item>
+      <ion-item>
+        <ion-label position="floating">Descripción</ion-label>
+        <ion-textarea [(ngModel)]="book().description" name="description" required></ion-textarea>
+      </ion-item>
 
-    <ion-item>
-      <ion-label position="floating">Ubicación</ion-label>
-      <ion-input 
-        [(ngModel)]="book().location" 
-        name="location" 
-        required>
-      </ion-input>
-    </ion-item>
+      <ion-item>
+        <ion-label position="floating">Ubicación</ion-label>
+        <ion-input [(ngModel)]="book().location" name="location" required></ion-input>
+      </ion-item>
 
-    <ion-item>
-      <ion-label>Géneros</ion-label>
-      <ion-select [(ngModel)]="book().genres" name="genres" multiple="true" okText="OK" cancelText="Cancelar">
-    <ion-select-option *ngFor="let g of genres" [value]="g.id">{{ g.name }}</ion-select-option>
-  </ion-select>
-    </ion-item>
+      <ion-item>
+        <ion-label>Géneros</ion-label>
+        <ion-select [(ngModel)]="book().genres" name="genres" multiple="true" okText="OK" cancelText="Cancelar">
+          @for (g of genres; track g.id) {
+            <ion-select-option [value]="g.id">{{ g.name }}</ion-select-option>
+          }
+        </ion-select>
+      </ion-item>
 
-    <ion-button 
-      expand="block" 
-      type="submit" 
-      class="ion-margin-top" 
-      color="success">
-      Publicar
-    </ion-button>
-    <ion-button 
-      expand="block" 
-      class="ion-margin-top" 
-      color="primary"
-      (click)="goHome()">
-      Volver
-    </ion-button>
-  </form>
+      <ion-item lines="none">
+        <ion-label>Foto del libro</ion-label>
+      </ion-item>
+
+      <ion-item lines="none">
+        <div class="photo-picker" (click)="takePhoto()">
+          @if (bookPhoto()) {
+            <ion-img [src]="bookPhoto()" alt="Foto del libro"></ion-img>
+          } @else {
+            
+          }
+        </div>
+      </ion-item>
+      
+      <ion-button expand="block" type="submit" class="ion-margin-top" color="success">
+        Publicar
+      </ion-button>
+    </form>
+  </div>
 </ion-content>
