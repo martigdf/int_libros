@@ -2,7 +2,7 @@ import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox'
 import { WebSocket } from '@fastify/websocket'
 
 const root: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
-
+  
   fastify.register(async function () {
 
     fastify.route({
@@ -14,23 +14,47 @@ const root: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => 
         return { root: true }
 
       },
-      wsHandler: (socket: WebSocket & {userId?: number}, req) => {
+      wsHandler: async (socket: WebSocket & { userId?: number }, req) => {
 
-        const authHeader = req.headers['authorization'];
-        let userId: number | undefined;
+        console.log(fastify.userSockets)
 
-        if (authHeader && authHeader.startsWith("Bearer ")) {
+        const token = (req.query as any).token;
 
-          const token = authHeader.slice("Bearer ".length);
-          const decoded = fastify.jwt.decode<{ id: number }>(token);
+        if (!token) {
+          
+          socket.close();
+          return;
 
-          if (decoded && typeof decoded === 'object' && decoded.id) {
-            
-            userId = decoded.id;
+        }
+
+        try {
+
+          const decoded = await fastify.jwt.verify<{ id: number }>(token);
+
+          if (decoded && typeof decoded.id === 'number') {
+
+            const userId = decoded.id;
             socket.userId = userId;
+
+            //fastify.userSockets.set(userId, socket);
+            console.log('Usuario ' + userId + ' conectado.');
+            
+            socket.on('close', () => {
+              
+              //fastify.userSockets.delete(userId);
+              console.log('Usuario ' + userId + ' desconectado.');
+            
+            });
+
+          } else {
+
+            socket.close();
           
           }
-        
+
+        } catch (err) {
+          console.error('Verificación fallida:', err);
+          socket.close();
         }
 
       }

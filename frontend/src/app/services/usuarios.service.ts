@@ -5,7 +5,7 @@ import { User, UserPost } from '../model/user';
 import { firstValueFrom } from 'rxjs';
 import { MainStoreService } from './main-store.service';
 import { signal } from '@angular/core';
-import { PutUser } from '../model/user';
+import { UserPatch } from '../model/user';
 
 @Injectable({
   providedIn: 'root'
@@ -44,9 +44,9 @@ export class UsuariosService {
   }
 
   // Método para actualizar un usuario
-  async putUser(id: string, data: PutUser) {
+  async patchUser(id: string, data: UserPatch) {
     const url = `${this.apiUrl}users/${id}`;
-    return await firstValueFrom(this.httpClient.put<PutUser>(url, data));
+    return await firstValueFrom(this.httpClient.patch<UserPatch>(url, data));
   }
 
   // Método para obtener el usuario por ID

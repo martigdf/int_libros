@@ -2,7 +2,7 @@
   @if (usuariosSignal.hasValue()) {
   <ion-grid>
     <ion-row>
-    @for (user of usuariosSignal.value(); track user.id) {
+    @for (user of usuariosFiltrados; track user.id) {
       <ion-card>
         <ion-card-header>
           <ion-card-title>{{ user.name }} {{ user.lastname }}</ion-card-title>

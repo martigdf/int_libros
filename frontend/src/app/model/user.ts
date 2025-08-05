@@ -18,7 +18,7 @@ export interface UserPost {
     role: string;
 }
 
-export interface PutUser {
+export interface UserPatch {
   name?: string;
   lastname?: string;
   username?: string;

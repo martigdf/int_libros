@@ -2,18 +2,22 @@ import { Component, inject, OnInit, computed } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { UsuariosService } from 'src/app/services/usuarios.service';
 import { Router } from '@angular/router';
-import { IonicModule } from '@ionic/angular';
 import { signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { IonicModule } from '@ionic/angular';
 import { MainStoreService } from 'src/app/services/main-store.service';
 import { AdminService } from 'src/app/services/admin.service';
 import { PhotoService } from 'src/app/services/photo.service';
-import { PutUser } from 'src/app/model/user';
+import { UserPatch } from 'src/app/model/user';
+import { ErrorMessagePipe } from 'src/app/pipes/error-message.pipe';
+import { addIcons } from 'ionicons';
+import { closeOutline, pencilOutline, checkmarkOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-user-profile',
   templateUrl: './user-profile.page.html',
-  imports: [IonicModule, CommonModule],
+  imports: [IonicModule, CommonModule, FormsModule, ErrorMessagePipe],
   styleUrls: ['./user-profile.page.scss'],
   standalone: true
 })
@@ -31,6 +35,24 @@ export class UserProfilePage implements OnInit {
   public userId = computed(() => this.mainStore.usuario()?.id ?? '');
   public userPhoto = signal<string | undefined>("https://ionicframework.com/docs/img/demos/avatar.svg")
 
+  public name = signal<string>('');
+  public lastName = signal<string>('');
+  public username = signal<string>('');
+
+  public modifyingUsername = signal<boolean>(false);
+  public modifyingName = signal<boolean>(false);
+  public modifyingLastName = signal<boolean>(false);
+
+  public newUsername: string = '';
+  public newName: string = '';
+  public newLastName: string = '';
+
+  constructor() {
+
+    addIcons({'pencil-outline': pencilOutline, 'checkmark-outline': checkmarkOutline, 'close-outline': closeOutline});
+
+  }
+
   async ngOnInit() {
 
     const current = JSON.parse(localStorage.getItem('user') || '{}');
@@ -38,6 +60,10 @@ export class UserProfilePage implements OnInit {
     if (current?.id) {
       const data = await this.usuariosService.getById(current.id);
       this.user.set(data);
+
+      this.name.set(this.user().name);
+      this.lastName.set(this.user().lastname);
+      this.username.set(this.user().username);
 
       if (data.photo !== '') {
 
@@ -62,15 +88,110 @@ export class UserProfilePage implements OnInit {
 
   }
 
-  async modifyData() {
+  modifyUsername() {
 
-    //Agregar formularios a la página
+    this.modifyingUsername.set(true);
 
-    //Código al confirmar:
+  }
 
-    const data: PutUser = {};
+  cancelUsername() {
 
-    //this.usuariosService.putUser(this.userId(), data);
+    this.modifyingUsername.set(false);
+
+  }
+
+  async submitUsername() {
+
+    const newUsername = this.newUsername;
+
+    if (newUsername === '') {
+
+      this.modifyingUsername.set(false);
+
+      return
+
+    }
+
+    console.log(newUsername);
+
+    const data: UserPatch = {username: newUsername};
+
+    await this.usuariosService.patchUser(this.userId(), data);
+
+    this.username.set(newUsername);
+
+    this.modifyingUsername.set(false);
+    
+  }
+
+  modifyName() {
+
+    this.modifyingName.set(true);
+  }
+
+  cancelName() {
+
+    this.modifyingName.set(false);
+
+  }
+
+  async submitName() {
+
+    const newName = this.newName;
+
+    if (newName === '') {
+
+      this.modifyingName.set(false);
+
+      return
+
+    }
+
+    console.log(newName);
+
+    const data: UserPatch = {name: newName};
+
+    await this.usuariosService.patchUser(this.userId(), data);
+
+    this.name.set(newName);
+
+    this.modifyingName.set(false);
+
+  }
+
+  modifyLastName() {
+
+    this.modifyingLastName.set(true);
+
+  }
+
+  cancelLastName() {
+
+    this.modifyingLastName.set(false);
+    
+  }
+
+  async submitLastName() {
+
+    const newLastName = this.newLastName;
+
+    if (newLastName === '') {
+
+      this.modifyingLastName.set(false);
+
+      return
+
+    }
+
+    console.log(newLastName);
+
+    const data: UserPatch = {lastname: newLastName};
+
+    await this.usuariosService.patchUser(this.userId(), data);
+
+    this.lastName.set(newLastName);
+
+    this.modifyingLastName.set(false);
 
   }
 

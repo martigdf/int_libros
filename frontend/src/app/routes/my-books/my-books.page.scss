@@ -2,3 +2,11 @@ ion-thumbnail {
   --size: 200px;
   --border-radius: 10px;
 }
+
+ion-card-title {
+  min-height: 2.5rem;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

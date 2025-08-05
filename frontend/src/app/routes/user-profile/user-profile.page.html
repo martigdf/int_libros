@@ -17,14 +17,14 @@
         size-md="8" 
         size-lg="6" 
       >
-        @if(user()){
+        @if (user()) {
+
           <ion-card class="ion-padding ion-text-center">
             <ion-card-header>
               <ion-card-title>Mi cuenta</ion-card-title>
             </ion-card-header>
 
             <ion-card-content>
-
               <ion-row class="ion-justify-content-center ion-margin-bottom">
                 <ion-col size="auto" class="ion-text-center">
                 <ion-avatar
@@ -34,32 +34,76 @@
                 </ion-avatar>
                 </ion-col>
               </ion-row>
-              
-              <ion-row class="ion-justify-content-center">
-                <ion-col size="auto" class="ion-text-center">
-                  <h2><strong class="ion-margin-top">Nombre: </strong></h2>
-                  <ion-text class="ion-margin-bottom ion-margin-top">{{ user().name }} {{ user().last_name }}</ion-text>
 
-                  <h2><strong class="ion-margin-top">Nombre de usuario:</strong></h2>
-                  <ion-text class="ion-margin-bottom ion-margin-top">{{ user().username }}</ion-text>
+                <ion-row class="ion-justify-content-center">
+                  <ion-col size="auto" >
+                    
+                    @if (modifyingUsername() === false) {
 
-                  <h2><strong class="ion-margin-top">Email:</strong></h2>
-                  <ion-text class="ion-margin-bottom ion-margin-top">{{ user().email }}</ion-text>
-                </ion-col>
-              </ion-row>
+                      <ion-item>
+                        <ion-label slot="start">Nombre de usuario:</ion-label>
+                        <ion-input slot="end" value="{{ username() }}" [readonly]="true"></ion-input>
+                        <ion-icon slot="end" name="pencil-outline" style="cursor: pointer;" (click)="modifyUsername()"></ion-icon>
+                      </ion-item>
+
+                    } @else {
+
+                      <ion-item>
+                        <ion-label slot="start">Nombre de usuario:</ion-label>
+                        <ion-input slot="end" placeholder="{{ username() }}" [(ngModel)]="newUsername"></ion-input>
+                        <ion-icon slot="end" name="checkmark-outline" style="cursor: pointer;" (click)="submitUsername()"></ion-icon>
+                        <ion-icon slot="end" name="close-outline" style="cursor: pointer;" (click)="cancelUsername()"></ion-icon>
+                      </ion-item>
+
+                    }
+
+                    @if (modifyingName() === false) {
+
+                      <ion-item>
+                        <ion-label slot="start">Nombre:</ion-label>
+                        <ion-input slot="end" value="{{ name() }}" [readonly]="true"></ion-input>
+                        <ion-icon slot="end" name="pencil-outline" style="cursor: pointer;" (click)="modifyName()"></ion-icon>
+                      </ion-item>
+
+                    } @else {
+
+                      <ion-item>
+                        <ion-label slot="start">Nombre:</ion-label>
+                        <ion-input slot="end" placeholder="{{ name() }}" [(ngModel)]="newName"></ion-input>
+                        <ion-icon slot="end" name="checkmark-outline" style="cursor: pointer;" (click)="submitName()"></ion-icon>
+                        <ion-icon slot="end" name="close-outline" style="cursor: pointer;" (click)="cancelName()"></ion-icon>
+                      </ion-item>
+
+                    }
+
+                    @if (modifyingLastName() === false) {
+
+                      <ion-item>
+                        <ion-label slot="start">Apellido:</ion-label>
+                        <ion-input slot="end" value="{{ lastName() }}" [readonly]="true"></ion-input>
+                        <ion-icon slot="end" name="pencil-outline" style="cursor: pointer;" (click)="modifyLastName()"></ion-icon>
+                      </ion-item>
+
+                    } @else {
+
+                      <ion-item>
+                        <ion-label slot="start">Apellido:</ion-label>
+                        <ion-input slot="end" placeholder="{{ lastName() }}" [(ngModel)]="newLastName"></ion-input>
+                        <ion-icon slot="end" name="checkmark-outline" style="cursor: pointer;" (click)="submitLastName()"></ion-icon>
+                        <ion-icon slot="end" name="close-outline" style="cursor: pointer;" (click)="cancelLastName()"></ion-icon>
+                      </ion-item>
+
+                    }
+                    
+                    <ion-item>
+                      <ion-label slot="start">Correo electrónico:</ion-label>
+                      <ion-input slot="end" placeholder="{{ user().email }}"></ion-input>
+                    </ion-item>
+
+                  </ion-col>
+                </ion-row>
 
               <ion-row class="ion-justify-content-center ion-margin-top">
-                <ion-col size="auto">
-                    <ion-button 
-                      color="primary" 
-                      expand="block" 
-                      (click)="modifyData()"  
-                    >
-                      Modificar datos
-                    </ion-button>
-                  </ion-col>
-              </ion-row>
-              <ion-row class="ion-justify-content-center">
                 <ion-col size="auto">
                   <ion-button 
                     color="danger" 
@@ -70,6 +114,7 @@
                   </ion-button>
                 </ion-col>
               </ion-row>
+              
             </ion-card-content>
           </ion-card>
         }

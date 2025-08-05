@@ -17,10 +17,25 @@
         <ion-textarea [(ngModel)]="book().description" name="description" required></ion-textarea>
       </ion-item>
 
-      <ion-item>
-        <ion-label position="floating">Ubicación</ion-label>
-        <ion-input [(ngModel)]="book().location" name="location" required></ion-input>
+      <ion-item style="--inner-padding-end: 16px;">
+        <ion-label>Departamento</ion-label>
+        <ion-select interface="popover" [(ngModel)]="departamento" (ionChange)="onDepartamentoChange()" name="departamento">
+          @for (d of departamentos; track d) {
+            <ion-select-option [value]="d">{{ d }}</ion-select-option>
+          }
+        </ion-select>
       </ion-item>
+
+      @if (localidades.length > 0) {
+        <ion-item style="--padding-start: 24px; font-size: 0.9rem;">
+          <ion-label>Localidad</ion-label>
+          <ion-select interface="popover" [(ngModel)]="localidad" name="localidad">
+            @for (l of localidades; track l) {
+              <ion-select-option [value]="l">{{ l }}</ion-select-option>
+            }
+          </ion-select>
+        </ion-item>
+      }
 
       <ion-item>
         <ion-label>Géneros</ion-label>

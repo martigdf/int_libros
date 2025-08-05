@@ -3,6 +3,7 @@ import { query } from "../../services/database.js";
 import { BookIdSchema, BookPostSchema, BookPostType, BookSchema } from '../../schemas/book/bookSchema.js';
 import { UserType } from '../../schemas/user/userSchema.js';
 import { GenresResponseSchema } from '../../schemas/book/bookSchema.js';
+import { WebSocket } from 'ws';
 
 const bookRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
 
@@ -159,8 +160,10 @@ const bookRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<voi
           await query(`INSERT INTO books_genres (id_book, id_genre) VALUES ($1,$2)`, [bookId, genreId]);
         }
 
-        fastify.websocketServer.clients.forEach( (client) => {
-          client.send("books");
+        fastify.websocketServer.clients.forEach((client) => {
+          if (client.readyState === WebSocket.OPEN) {
+            client.send("books");
+          }
         });
 
         reply.code(201).send({

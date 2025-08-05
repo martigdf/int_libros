@@ -16,14 +16,14 @@
                 <h2>{{ book.name }}</h2>
                 <p>{{ book.author }}</p>
                 @if (book.genres && book.genres.length > 0) {
-                  <p>Géneros: {{ book.genres.join(', ') }}</p>
+                  <p><strong>Géneros: </strong>{{ book.genres.join(', ') }}</p>
                 } @else {
                   <p>Géneros: Ninguno</p>
                 }
                 @if (book.state == 'available') {
-                  <p class="ion-margin-top">Estado: Disponible</p>
+                  <p class="ion-margin-top"><strong>Estado:</strong> Disponible</p>
                 } @else {
-                  <p class="ion-margin-top">Estado: No disponible</p>
+                  <p class="ion-margin-top"><strong>Estado:</strong> No disponible</p>
                 }
                 @if (book.owner_id.toString() == this.mainStore.userId()) {
                   <p>Publicado por ti</p>

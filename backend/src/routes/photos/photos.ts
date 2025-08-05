@@ -7,6 +7,7 @@ import { readFile, writeFile } from 'fs/promises';
 import { BookIdSchema } from '../../schemas/book/bookSchema.js';
 import { UserIdSchema } from '../../schemas/user/userSchema.js';
 import { query } from '../../services/database.js';
+//import { WebSocket } from 'ws'
 
 const photoRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
 
@@ -88,9 +89,15 @@ const photoRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<vo
 
             await writeFile(savePath, buffer);
 
-            fastify.websocketServer.clients.forEach( (client) => {
-                client.send("userPhoto");
-            });
+            //const socket = fastify.userSockets.get(userId);
+
+            //console.log(userId, socket)
+
+            //if (socket && socket.readyState === WebSocket.OPEN) {
+                
+            //    socket.send("userPhoto");
+            
+            //}
 
         }
     });

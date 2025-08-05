@@ -31,7 +31,7 @@ const userRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<voi
     }
   });
 
-  fastify.put('/:id', {
+  fastify.patch('/:id', {
     schema: {
       tags: ['users'],
       summary: 'Ruta para actualizar un usuario',
@@ -44,7 +44,8 @@ const userRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<voi
         500: Type.Object({ message: Type.String() }),
       }
     },
-    //onRequest: fastify.verifySelfOrAdmin,
+    //onRequest: fastify.authenticate,
+    //preHandler: fastify.verifySelfOrAdmin,
     handler: async function (request, reply) {
       const { id } = request.params as { id: number };
       const userUpdate = request.body as UserPutType;

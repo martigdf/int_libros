@@ -8,6 +8,7 @@ import { IonicModule } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { PhotoService } from 'src/app/services/photo.service';
 import { AlertController } from '@ionic/angular';
+import { PlaceService } from 'src/app/services/place.service';
 
 @Component({
   selector: 'app-publish-book',
@@ -18,6 +19,7 @@ import { AlertController } from '@ionic/angular';
 })
 export class PublishBookPage implements OnInit {
 
+  public placeService = inject(PlaceService);
   public photoService = inject(PhotoService);
   public alertController = inject(AlertController);
 
@@ -29,7 +31,19 @@ export class PublishBookPage implements OnInit {
     genres: []
   });
 
+  departamento = '';
+  localidad = '';
+
   bookPhoto = signal<string | undefined>(undefined);
+
+  departamentos: string[] = [
+    'Artigas', 'Canelones', 'Cerro Largo', 'Colonia', 'Durazno',
+    'Flores', 'Florida', 'Lavalleja', 'Maldonado', 'Montevideo',
+    'Paysandú', 'Río Negro', 'Rivera', 'Rocha', 'Salto',
+    'San José', 'Soriano', 'Tacuarembó', 'Treinta y Tres'
+  ];
+  
+  localidades: string[] = [];
 
   genres: Genre[] = [];
 
@@ -41,6 +55,18 @@ export class PublishBookPage implements OnInit {
 
   }
 
+  async onDepartamentoChange() {
+    this.localidad = '';
+    this.localidades = [];
+
+    if (this.departamento) {
+      
+      this.localidades = await this.placeService.getPlacesFromDepartment(this.departamento);
+
+    }
+  }
+
+
   isHovering = false;
 
   async takePhoto() {
@@ -51,7 +77,12 @@ export class PublishBookPage implements OnInit {
   }
 
   async onSubmit() {
+
     try {
+
+      this.book().location = this.localidad + ", " + this.departamento;
+
+      console.log(this.book().location)
 
       const reply = await this.bookService.publishBook(this.book());
       console.log('Libro publicado correctamente');
@@ -61,6 +92,7 @@ export class PublishBookPage implements OnInit {
         message: '¡El libro se publicó correctamente!',
         buttons: ['OK']
       });
+      
       await alert.present();
 
       await this.bookService.submitPhoto(reply.bookId, this.bookPhoto() || '')

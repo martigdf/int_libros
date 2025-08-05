@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, resource } from '@angular/core';
+import { Component, inject, OnInit, resource, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from "@ionic/angular";
@@ -6,6 +6,7 @@ import { User } from 'src/app/model/user';
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { AdminService } from 'src/app/services/admin.service';
+import { MainStoreService } from 'src/app/services/main-store.service';
 
 const socket = new WebSocket("ws://localhost/backend/")
 
@@ -21,13 +22,22 @@ export class UsuariosListadoPage implements OnInit {
 
   private alertCtrl = inject(AlertController);
   private adminService = inject(AdminService);
+  private mainStore = inject(MainStoreService);
 
+  public userId = signal<string | null>(this.mainStore.userId());
   
   public usuariosSignal = resource<User[], unknown>({
 
     loader : () => this.adminService.getAllUsersAsAdmin()
   
   });
+
+  // Getter para filtrar usuario loggeado
+  get usuariosFiltrados(): User[] {
+    const data = this.usuariosSignal.value();
+    if (!data) return [];
+    return data.filter(u => u.id !== this.userId())
+  }
 
   constructor(private router: Router) { }
 

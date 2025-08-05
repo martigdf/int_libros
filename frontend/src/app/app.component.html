@@ -2,15 +2,30 @@
     @if (isLoggedIn() == true) {
       <ion-menu contentId="main-content">
           
-        <ion-menu-toggle>
-          <ion-item (click)="perfilUsuario(usuarioId())" style="cursor: pointer;">
-            <ion-label slot="start">{{ this.mainStore.userUsername() }}</ion-label>
-            <ion-avatar aria-hidden="true" slot="end">
-              <img alt="" src="{{ this.userPhoto() }}" />
-            </ion-avatar>
-          </ion-item>
-        </ion-menu-toggle>
+        @if (changeUserPhoto() == false) {
 
+          <ion-menu-toggle>
+            <ion-item (click)="perfilUsuario(usuarioId())" style="cursor: pointer;">
+              <ion-label slot="start">{{ this.mainStore.userUsername() }}</ion-label>
+              <ion-avatar aria-hidden="true" slot="end">
+                <img alt="" src="{{ this.userPhoto() }}" />
+              </ion-avatar>
+            </ion-item>
+          </ion-menu-toggle>
+
+        } @else {
+
+          <ion-menu-toggle>
+            <ion-item (click)="perfilUsuario(usuarioId())" style="cursor: pointer;">
+              <ion-label slot="start">{{ this.mainStore.userUsername() }}</ion-label>
+              <ion-avatar aria-hidden="true" slot="end">
+                <img alt="" src="{{ this.userPhoto() }}" />
+              </ion-avatar>
+            </ion-item>
+          </ion-menu-toggle>          
+
+        }
+        
         <ion-content class="ion-padding">
 
           @if (mainStore.isUser()) {

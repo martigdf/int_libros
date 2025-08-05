@@ -8,8 +8,6 @@ import { BookService } from 'src/app/services/book.service';
 import { MainStoreService } from 'src/app/services/main-store.service';
 import { UsuariosService } from 'src/app/services/usuarios.service';
 
-const socket = new WebSocket("ws://localhost/backend/")
-
 @Component({
   selector: 'app-home',
   templateUrl: './home.page.html',
@@ -26,8 +24,6 @@ export class HomePage  implements OnInit {
   public booksSignal = signal<Book[]>([]);
   public userSignal = signal<User | null>(null);
 
-  public bookOwners = Map<number, string>
-
   constructor(private router: Router) { }
 
   public allBooks = resource<Book[], unknown>({
@@ -39,6 +35,15 @@ export class HomePage  implements OnInit {
   });
   
   async ngOnInit() {
+    
+    const token = this.mainStore.token();
+    const socket = new WebSocket('ws://localhost/backend/?token=' + token);
+
+    socket.addEventListener("open", (event) => {
+
+      console.log("Conexión establecida")
+
+    })
 
     socket.addEventListener("message", (event) => {
 

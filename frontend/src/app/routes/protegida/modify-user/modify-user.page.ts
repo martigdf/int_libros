@@ -6,7 +6,7 @@ import { UsuariosService } from 'src/app/services/usuarios.service';
 import { ActivatedRoute } from '@angular/router';
 import { UserFormComponent } from "../components/user-form/user-form.component";
 import { User } from 'src/app/model/user';
-import { PutUser } from 'src/app/model/user';
+import { UserPatch } from 'src/app/model/user';
 
 @Component({
   selector: 'app-modify-user',
@@ -31,11 +31,11 @@ export class ModifyUserPage implements OnInit {
     this.user.set(user);
   }
 
-  async handleSave(payload: PutUser) {
+  async handleSave(payload: UserPatch) {
     const currentUser = this.user();
     if (!currentUser) return;
 
-    const updatedData = await this.usuarioService.putUser(currentUser.id, payload);
+    const updatedData = await this.usuarioService.patchUser(currentUser.id, payload);
     const updatedUser: User = { ...currentUser, ...updatedData };
     this.user.set(updatedUser);
 

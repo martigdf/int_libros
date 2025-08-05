@@ -75,7 +75,8 @@ INSERT INTO users (name, lastname, username, email, role, password) VALUES
     ('Jorge', 'Melnik', 'melnik_1','jorgemelnik@gmail.com', 'admin', crypt('contraseña', gen_salt('bf'))),
     ('Martina', 'Guzmán', 'marti_42', 'martina@gmail.com', 'user', crypt('contraseña', gen_salt('bf'))),
     ('Luis', 'Di Muro', 'luis_89', 'luis@gmail.com', 'user', crypt('contraseña', gen_salt('bf'))),
-    ('Carlitos', 'Tave', 'carlito_89', 'carlito@gmail.com', 'user', crypt('contraseña', gen_salt('bf')))
+    ('Carlitos', 'Tave', 'carlito_89', 'carlito@gmail.com', 'user', crypt('contraseña', gen_salt('bf'))),
+    ('Ana', 'Pérez', 'ana_admin', 'ana.perez@gmail.com', 'admin', crypt('contraseña', gen_salt('bf')))
 ;
 
 INSERT INTO books (name, author, description, state, creation_date, location, owner_id) VALUES

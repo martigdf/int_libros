@@ -10,9 +10,6 @@ import { User } from './model/user';
 import { IonicModule } from '@ionic/angular';
 import { UsuariosService } from './services/usuarios.service';
 
-const token = localStorage.getItem('token')
-const socket = new WebSocket("ws://localhost/backend/")
-
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
@@ -30,23 +27,42 @@ export class AppComponent {
   
   public usuario = signal<User | null>(null);
   public usuarioId = computed(() => this.mainStore.usuario()?.id ?? '');
-  public userPhoto = signal<string | undefined>("https://ionicframework.com/docs/img/demos/avatar.svg")
+  public userPhoto = signal<string>("https://ionicframework.com/docs/img/demos/avatar.svg")
+  public changeUserPhoto = signal<boolean>(false);
 
   constructor() {
     this.router.events.subscribe(() => {
+      this.userPhoto.set(this.apiUrl + 'photos/users/' + this.mainStore.userId() || "https://ionicframework.com/docs/img/demos/avatar.svg")
       this.isHome.set(this.router.url === '/home');
     });
   }
 
   async ngOnInit(){
 
-    this.userPhoto.set(this.apiUrl + 'photos/users/' + this.usuarioId() || "https://ionicframework.com/docs/img/demos/avatar.svg")
+    const token = this.mainStore.token();
+    const socket = new WebSocket('ws://localhost/backend/?token=' + token);
+
+    socket.addEventListener("open", (event) => {
+
+      console.log("Conexión establecida")
+
+    })
 
     socket.addEventListener("message", (event) => {
 
       if (event.data == 'userPhoto') {
 
         console.log("Cambiar foto")
+        
+        if (this.changeUserPhoto() === false) {
+
+          this.changeUserPhoto.set(true);
+
+        } else {
+
+          this.changeUserPhoto.set(false);
+
+        }
         
         const newPhoto = this.apiUrl + 'photos/users/' + this.usuarioId();
         this.userPhoto.set(newPhoto);
