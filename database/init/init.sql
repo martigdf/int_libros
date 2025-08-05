@@ -95,7 +95,9 @@ INSERT INTO genres (name) VALUES
   ('Histórico'),     
   ('Terror'),      
   ('Biografía'),       
-  ('Poesía');
+  ('Poesía'),
+  ('Ciencia Ficción'),
+  ('Desarrollo Personal');
 
 
 INSERT INTO books_genres (id_book, id_genre) VALUES
