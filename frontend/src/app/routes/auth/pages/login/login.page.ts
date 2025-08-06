@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { LoginFormComponent } from '../../components/login-form/login-form.component';
 import { MainStoreService } from 'src/app/services/main-store.service';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { firstValueFrom } from 'rxjs';
 import { Login, Token, User } from 'src/app/model/user';
@@ -50,7 +50,11 @@ export class LoginPage implements OnInit {
       }
     }
     catch (error) {
+      
+      const { status }  = error as { status: number }
+      
       console.error("Login failed", error);
+
     }
 
   }
