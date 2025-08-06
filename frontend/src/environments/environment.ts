@@ -6,7 +6,7 @@
 //cambiar siempre que cambie de wifi 
 export const environment = {
   production: false,
-  apiUrl: 'https://10.4.200.6/backend/'
+  apiUrl: 'https://10.4.200.71/backend/'
 };
 
 /*

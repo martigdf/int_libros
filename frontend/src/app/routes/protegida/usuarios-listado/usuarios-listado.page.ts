@@ -8,7 +8,7 @@ import { AlertController } from '@ionic/angular';
 import { AdminService } from 'src/app/services/admin.service';
 import { MainStoreService } from 'src/app/services/main-store.service';
 
-const socket = new WebSocket("ws://localhost/backend/")
+const socket = new WebSocket("wss://10.4.200.71/backend/")
 
 @Component({
   selector: 'app-usuarios-listado',

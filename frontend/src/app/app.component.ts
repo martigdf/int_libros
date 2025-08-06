@@ -40,7 +40,7 @@ export class AppComponent {
   async ngOnInit(){
 
     const token = this.mainStore.token();
-    const socket = new WebSocket('ws://localhost/backend/?token=' + token);
+    const socket = new WebSocket('wss://10.4.200.71/backend/?token=' + token);
 
     socket.addEventListener("open", (event) => {
 
